@@ -4,14 +4,24 @@ import java.util.ArrayList;
 import java.io.Serializable;
 
 public class Board implements Serializable{
+
+    //final static long serialVersionUID;
     private String name;
+    private ArrayList<Element> content;
+    // private int idCounter = 0;
+
+    // public int getIdCounter() {
+    //     return this.idCounter;
+    // }
+
+    // public void setIdCounter(int idCounter) {
+    //     this.idCounter = idCounter;
+    // }
 
     public Board(String name, ArrayList<Element> content) {
         this.name = name;
         this.content = content;
     }
-
-    private ArrayList<Element> content;
 
     public String getName() {
         return name;

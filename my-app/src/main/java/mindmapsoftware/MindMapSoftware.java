@@ -2,32 +2,34 @@ package mindmapsoftware;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Scanner;
-
-import static java.util.Arrays.*;
+import java.util.regex.Pattern;
 
 public class MindMapSoftware {
 
     private static Board active;
 
-    public static ArrayList search(String input, ArrayList targetList){
-        for (Element element : targetList.getContent()){
-            if (element.getClass().getSimpleName() == "Node"){
-                if ((element.getName().toLowerCase().contains(input.toLowerCase())) || (element.getText().toLowerCase().contains(input.toLowerCase()))){
-                    results.add(element);
+    // This returns rather baffling results as nodes that contain other nodes are returned in their entirity including the recursive nodes within them
+    // I hope for the code that displays the results to abstract over this and just display relevant data for each node and connector
+    public static ArrayList<Element> search(String input, ArrayList<Element> targetList){
+        ArrayList<Element> results = new ArrayList<>();
+
+        for (Element element : targetList){
+            if (element instanceof Node){
+                Node node = (Node) element;
+                if ((node.getName().toLowerCase().contains(input.toLowerCase())) || (node.getText().toLowerCase().contains(input.toLowerCase()))){
+                    results.add(node);
                 }
-                if (element.getContent() != null){
+                if (node.getContent().size() != 0){
                     // The node contains more nodes and connectors
-                    results = results.addAll(search(input, element.getContent()));
+                    results.addAll(search(input, node.getContent()));
                 }
-            } else if (element.getClass().getSimpleName() == "Connector"){
-                if (element.getLabel().toLowerCase().contains(input.toLowerCase())){
-                    results.add(element);
+            } else if (element instanceof Connector){
+                Connector connector = (Connector) element;
+                if (connector.getLabel().toLowerCase().contains(input.toLowerCase())){
+                    results.add(connector);
                 }
             } 
-        };
-
-        ArrayList<Node> results = new ArrayList<>();
+        }   
         return results;
     }
 
@@ -63,9 +65,6 @@ public class MindMapSoftware {
             c.printStackTrace();
             return;
         }
-
-        System.out.println("Deserialized Board is called: " + loadedBoard.getName());
-        System.out.println("Contents: " + loadedBoard.getContent());
     }
 
     public static void main(String[] args){
@@ -73,19 +72,34 @@ public class MindMapSoftware {
         Node Node_1 = new Node();
         Node Node_2 = new Node();
         testBoard.getContent().add(Node_1);
-        testBoard.getContent().add(Node_2);
         ArrayList<Element> temp = new ArrayList<>();
         temp.add(Node_2);
         Node_1.setContent(temp);
         Node_1.setName("Stan");
         Node_2.setName("Stan");
         active = testBoard;
-        search("Stan", active.getContent());
-        
-
+        System.out.println(active.getContent());
+        System.out.println("Results: " + search("Stan", active.getContent()));
     }
 
     private void linkFinder(String text){
+        ArrayList<Integer> startPoints = new ArrayList<>();
+        for (int i; i<text.length(); i++){
+            if (text.charAt(i) == '[') {
+                startPoints.add(i);
+            }
+        }
 
+        for (int i : startPoints) {
+            String tempText = text.substring(i);
+            if ((tempText.indexOf(']') > 0) && (tempText.indexOf('(') > tempText.indexOf(']')) && (tempText.indexOf(')') > tempText.indexOf('('))){
+                //highlight the area between the [ ]
+                // delete the area between the ( )
+                // attempt to make it a hyper link and bind it to the area between the [ ]
+                // otherwise assume its a file link and try to bind the area between the [ ] to the relevant files 
+            }
+        }
+
+        }
     }
 }

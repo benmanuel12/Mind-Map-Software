@@ -9,6 +9,8 @@ public class Connector extends Element implements Serializable {
     private String label;
 
     public Connector(String label, String labelColor, String color, String type) {
+        // super.setId(active.getIdCounter());
+        // active.setIdCounter(active.getIdCounter() + 1);
         this.label = label;
         this.labelColor = labelColor;
         this.color = color;
@@ -16,6 +18,8 @@ public class Connector extends Element implements Serializable {
     }
 
     public Connector() {
+        // super.setId(active.getIdCounter());
+        // active.setIdCounter(active.getIdCounter() + 1);
         this.label = "Add label";
         this.labelColor = "black";
         this.color = "black";

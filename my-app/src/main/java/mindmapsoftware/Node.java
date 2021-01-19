@@ -99,6 +99,8 @@ public class Node extends Element implements Serializable {
     }
 
     public Node(String name, String nameColor, String backgroundColor, String border, String borderColor, ArrayList<Connector> connectedTo, boolean center, ArrayList<Element> content, String media, String text) {
+        // super.setId(active.getIdCounter());
+        // active.setIdCounter(active.getIdCounter() + 1);
         this.name = name;
         this.nameColor = nameColor;
         this.backgroundColor = backgroundColor;
@@ -112,6 +114,8 @@ public class Node extends Element implements Serializable {
     }
 
     public Node(){
+        // super.setId(active.getIdCounter());
+        // active.setIdCounter(active.getIdCounter() + 1);
         this.name = "Add name";
         this.nameColor = "black";
         this.backgroundColor = "white";
