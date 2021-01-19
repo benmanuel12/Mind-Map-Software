@@ -68,38 +68,48 @@ public class MindMapSoftware {
     }
 
     public static void main(String[] args){
-        Board testBoard = new Board("testBoard", new ArrayList<Element>());
-        Node Node_1 = new Node();
-        Node Node_2 = new Node();
-        testBoard.getContent().add(Node_1);
-        ArrayList<Element> temp = new ArrayList<>();
-        temp.add(Node_2);
-        Node_1.setContent(temp);
-        Node_1.setName("Stan");
-        Node_2.setName("Stan");
-        active = testBoard;
-        System.out.println(active.getContent());
-        System.out.println("Results: " + search("Stan", active.getContent()));
+        // Board testBoard = new Board("testBoard", new ArrayList<Element>());
+        // Node Node_1 = new Node();
+        // Node Node_2 = new Node();
+        // testBoard.getContent().add(Node_1);
+        // ArrayList<Element> temp = new ArrayList<>();
+        // temp.add(Node_2);
+        // Node_1.setContent(temp);
+        // Node_1.setName("Stan");
+        // Node_2.setName("Stan");
+        // active = testBoard;
+        // System.out.println(active.getContent());
+        // System.out.println("Results: " + search("Stan", active.getContent()));
+
+        System.out.println(linkFinder("[Google](https://www.google.co.uk)[Google](https://www.google.co.uk)"));
     }
 
-    private void linkFinder(String text){
+    private static String linkFinder(String text){
         ArrayList<Integer> startPoints = new ArrayList<>();
-        for (int i; i<text.length(); i++){
+        for (int i = 0; i<text.length(); i++){
             if (text.charAt(i) == '[') {
                 startPoints.add(i);
             }
         }
 
         for (int i : startPoints) {
-            String tempText = text.substring(i);
+            String tempText = text.substring(i, text.indexOf(')') + 1);
             if ((tempText.indexOf(']') > 0) && (tempText.indexOf('(') > tempText.indexOf(']')) && (tempText.indexOf(')') > tempText.indexOf('('))){
-                //highlight the area between the [ ]
-                // delete the area between the ( )
-                // attempt to make it a hyper link and bind it to the area between the [ ]
+                // Link is valid
+                // Check if hyperlink
+                if (tempText.substring(tempText.indexOf('(') + 1).startsWith("http")){
+                    int oldLength = tempText.length();
+                    // Assemble tempText into a HTML tag
+                    tempText = "<a href=\"" + tempText.substring(tempText.indexOf('(') + 1, tempText.indexOf(')')) + "\">" + tempText.substring(tempText.indexOf('[') + 1, (tempText.indexOf(']'))) + "</a>";
+                    // Set display of parent nodes text to html
+                    String before = text.substring(0, i);
+                    String after = text.substring(i + oldLength, text.length());
+                    text = before + tempText + after;
+                }
                 // otherwise assume its a file link and try to bind the area between the [ ] to the relevant files 
+                // Leave until UI is created
             }
         }
-
-        }
+        return text;
     }
 }
