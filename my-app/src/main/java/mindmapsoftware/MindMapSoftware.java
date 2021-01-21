@@ -81,35 +81,36 @@ public class MindMapSoftware {
         // System.out.println(active.getContent());
         // System.out.println("Results: " + search("Stan", active.getContent()));
 
-        System.out.println(linkFinder("[Google](https://www.google.co.uk)[Google](https://www.google.co.uk)"));
+        System.out.println(linkFinder("[Google](https://www.google.co.uk)"));
     }
 
     private static String linkFinder(String text){
-        ArrayList<Integer> startPoints = new ArrayList<>();
-        for (int i = 0; i<text.length(); i++){
-            if (text.charAt(i) == '[') {
-                startPoints.add(i);
-            }
-        }
+        int startPoint = -2;
+        do {
+            startPoint = text.indexOf('[');
+            if (startPoint != -1){
+                String tempText = text.substring(startPoint, text.indexOf(')') + 1);
+                if ((tempText.indexOf(']') > 0) && (tempText.indexOf('(') > tempText.indexOf(']')) && (tempText.indexOf(')') > tempText.indexOf('('))){
+                    // Link is valid
+                    // Check if hyperlink
+                    if (tempText.substring(tempText.indexOf('(') + 1).startsWith("http")){
+                        int oldLength = tempText.length();
+                        // Assemble tempText into a HTML tag
+                        // tempText = "<a href=\"" + tempText.substring(tempText.indexOf('(') + 1, tempText.indexOf(')')) + "\">" + tempText.substring(tempText.indexOf('[') + 1, (tempText.indexOf(']'))) + "</a>";
+                        String link = tempText.substring(tempText.indexOf('(') + 1, tempText.indexOf(')'));
+                        String label = tempText.substring(tempText.indexOf('[') + 1, (tempText.indexOf(']')));
+                        tempText = "<a href=\"" + link + "\">" + label + "</a>";
 
-        for (int i : startPoints) {
-            String tempText = text.substring(i, text.indexOf(')') + 1);
-            if ((tempText.indexOf(']') > 0) && (tempText.indexOf('(') > tempText.indexOf(']')) && (tempText.indexOf(')') > tempText.indexOf('('))){
-                // Link is valid
-                // Check if hyperlink
-                if (tempText.substring(tempText.indexOf('(') + 1).startsWith("http")){
-                    int oldLength = tempText.length();
-                    // Assemble tempText into a HTML tag
-                    tempText = "<a href=\"" + tempText.substring(tempText.indexOf('(') + 1, tempText.indexOf(')')) + "\">" + tempText.substring(tempText.indexOf('[') + 1, (tempText.indexOf(']'))) + "</a>";
-                    // Set display of parent nodes text to html
-                    String before = text.substring(0, i);
-                    String after = text.substring(i + oldLength, text.length());
-                    text = before + tempText + after;
+                        // Set display of parent nodes text to html
+                        String before = text.substring(0, startPoint);
+                        String after = text.substring(startPoint + oldLength, text.length());
+                        text = before + tempText + after;
+                    }
+                    // otherwise assume its a file link and try to bind the area between the [ ] to the relevant files 
+                    // Leave until UI is created
                 }
-                // otherwise assume its a file link and try to bind the area between the [ ] to the relevant files 
-                // Leave until UI is created
             }
-        }
+        } while (startPoint != -1);
         return text;
     }
 }
