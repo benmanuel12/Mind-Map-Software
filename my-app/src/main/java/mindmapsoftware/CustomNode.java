@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Node extends Element implements Serializable {
+public class CustomNode extends Element implements Serializable {
     private String name;
     private String nameColor;
     private String backgroundColor;
@@ -98,7 +98,7 @@ public class Node extends Element implements Serializable {
         this.text = text;
     }
 
-    public Node(String name, String nameColor, String backgroundColor, String border, String borderColor, ArrayList<Connector> connectedTo, boolean center, ArrayList<Element> content, String media, String text) {
+    public CustomNode(String name, String nameColor, String backgroundColor, String border, String borderColor, ArrayList<Connector> connectedTo, boolean center, ArrayList<Element> content, String media, String text) {
         // super.setId(active.getIdCounter());
         // active.setIdCounter(active.getIdCounter() + 1);
         this.name = name;
@@ -113,7 +113,7 @@ public class Node extends Element implements Serializable {
         this.text = text;
     }
 
-    public Node(){
+    public CustomNode(){
         // super.setId(active.getIdCounter());
         // active.setIdCounter(active.getIdCounter() + 1);
         this.name = "Add name";

@@ -2,9 +2,22 @@ package mindmapsoftware;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.regex.Pattern;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
+import javafx.stage.Popup;
+import javafx.stage.Stage;
+import javafx.scene.layout.Priority;
+import javafx.geometry.Pos;
 
-public class MindMapSoftware {
+public class MindMapSoftware extends Application{
 
     private static Board active;
 
@@ -14,8 +27,8 @@ public class MindMapSoftware {
         ArrayList<Element> results = new ArrayList<>();
 
         for (Element element : targetList){
-            if (element instanceof Node){
-                Node node = (Node) element;
+            if (element instanceof CustomNode){
+                CustomNode node = (CustomNode) element;
                 if ((node.getName().toLowerCase().contains(input.toLowerCase())) || (node.getText().toLowerCase().contains(input.toLowerCase()))){
                     results.add(node);
                 }
@@ -68,20 +81,7 @@ public class MindMapSoftware {
     }
 
     public static void main(String[] args){
-        // Board testBoard = new Board("testBoard", new ArrayList<Element>());
-        // Node Node_1 = new Node();
-        // Node Node_2 = new Node();
-        // testBoard.getContent().add(Node_1);
-        // ArrayList<Element> temp = new ArrayList<>();
-        // temp.add(Node_2);
-        // Node_1.setContent(temp);
-        // Node_1.setName("Stan");
-        // Node_2.setName("Stan");
-        // active = testBoard;
-        // System.out.println(active.getContent());
-        // System.out.println("Results: " + search("Stan", active.getContent()));
-
-        System.out.println(linkFinder("[Google](https://www.google.co.uk)"));
+        launch(args);
     }
 
     private static String linkFinder(String text){
@@ -112,5 +112,122 @@ public class MindMapSoftware {
             }
         } while (startPoint != -1);
         return text;
+    }
+
+    public void start(Stage primaryStage){
+        FileChooser fileChooser = new FileChooser();   
+
+        // Core UI elements
+        VBox root = new VBox();
+        TitledPane toolbar = new TitledPane();
+        HBox hbox = new HBox();
+
+        // Toolbar buttons
+        Button newBoardButton = new Button("New Board");
+        Button newCustomNodeButton = new Button("New Node");
+        Button saveButton = new Button("Save");
+        Button loadButton = new Button("Load");
+        Button quickAddToggleButton = new Button("Toggle Quick Add Mode");
+        Button upLayerButton = new Button("Up");
+        Button downLayerButton = new Button("Down");
+        TextField searchInput = new TextField();
+        Button searchSubmitButton = new Button("Search");
+
+        // Toolbar sub UI and button events
+        Popup newBoardPopup = new Popup();
+        Text newBoardPopupText = new Text("Enter name");
+        TextField newBoardPopupInput = new TextField();
+        Button newBoardConfirm = new Button("Create");
+        newBoardConfirm.setOnAction(e -> {
+            Board newBoard = new Board(newBoardPopupInput.getText(), new ArrayList<Element>());
+            active = newBoard;
+            newBoardPopup.hide();
+            // refresh the main section of the UI
+        });
+        VBox newBoardPopupRoot = new VBox();
+        newBoardPopupRoot.getChildren().addAll(newBoardPopupText, newBoardPopupInput, newBoardConfirm);
+
+        newBoardButton.setOnAction(e -> {
+            if (!newBoardPopup.isShowing()){
+                newBoardPopup.show(primaryStage);
+            } else {
+                newBoardPopup.hide();
+            }
+        });
+
+        newCustomNodeButton.setOnAction(e -> {
+            CustomNode tempNode = new CustomNode();
+            ArrayList<Element> tempArray = active.getContent().add(tempNode, active.getContent().size());
+            active.setContent();
+
+        });
+
+        saveButton.setOnAction(e -> {
+            save();
+            System.out.println("Saved");
+        });
+
+        loadButton.setOnAction(e -> {
+            File selectedFile = fileChooser.showOpenDialog(primaryStage);
+            load(selectedFile.getName());
+            System.out.println("Loaded: " + selectedFile.getName());
+        });
+
+        quickAddToggleButton.setOnAction(e -> {
+            boolean enabled = false;
+            if (enabled == false){
+                quickAddToggleButton.setStyle("-fx-background-color: #0000ff");
+                enabled = true;
+            } else if (enabled == true) {
+                quickAddToggleButton.setStyle("-fx-background-color: #ff0000");
+                enabled = false;
+            }
+        });
+
+        upLayerButton.setOnAction(e -> {
+            // Clear screen
+            // Load map from variable from last use of downLayerButon
+        });
+
+        downLayerButton.setOnAction(e -> {
+            // Locate the content attribute of the currently selected Node
+            // Clear the screen of the current map, storing contents in variable
+            // Load the contents of content to the screen
+            // Optional: Cool animation
+            // Optional: Some kind of layer tracker
+        });
+
+        searchSubmitButton.setOnAction(e -> {
+            System.out.println(search(searchInput.getText(), active.getContent()));
+        });
+
+        // Toolbar arrangements
+        hbox.getChildren().addAll(newBoardButton, newCustomNodeButton, saveButton, loadButton, quickAddToggleButton, upLayerButton, downLayerButton, searchInput, searchSubmitButton);
+        hbox.setAlignment(Pos.CENTER);
+        HBox.setHgrow(newBoardButton, Priority.SOMETIMES);
+        HBox.setHgrow(newCustomNodeButton, Priority.SOMETIMES);
+        HBox.setHgrow(saveButton, Priority.SOMETIMES);
+        HBox.setHgrow(loadButton, Priority.SOMETIMES);
+        HBox.setHgrow(quickAddToggleButton, Priority.SOMETIMES);
+        HBox.setHgrow(upLayerButton, Priority.SOMETIMES);
+        HBox.setHgrow(downLayerButton, Priority.SOMETIMES);
+        HBox.setHgrow(searchInput, Priority.SOMETIMES);
+        HBox.setHgrow(searchSubmitButton, Priority.SOMETIMES);
+        
+
+        toolbar.setText("Toolbar");
+        toolbar.setContent(hbox);
+
+        // Placeholder
+        Rectangle mapPlaceholder = new Rectangle(960, 550);
+        root.getChildren().addAll(toolbar, mapPlaceholder);
+
+        Scene scene = new Scene(root, 960, 600);
+        //scene.getStylesheets().add("stylesheet.css");
+
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Mind Map Software");
+        primaryStage.show();
+
     }
 }

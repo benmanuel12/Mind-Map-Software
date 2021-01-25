@@ -31,7 +31,7 @@ public class Board implements Serializable{
         this.name = name;
     }
 
-    public ArrayList getContent() {
+    public ArrayList<Element> getContent() {
         return content;
     }
 
