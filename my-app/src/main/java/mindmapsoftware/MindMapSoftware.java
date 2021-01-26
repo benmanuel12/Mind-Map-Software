@@ -3,6 +3,8 @@ package mindmapsoftware;
 import java.io.*;
 import java.util.ArrayList;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -15,11 +17,20 @@ import javafx.stage.FileChooser;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.scene.layout.Priority;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
+
 
 public class MindMapSoftware extends Application{
 
     private static Board active;
+    private static boolean enabled = false;
 
     // This returns rather baffling results as nodes that contain other nodes are returned in their entirity including the recursive nodes within them
     // I hope for the code that displays the results to abstract over this and just display relevant data for each node and connector
@@ -133,32 +144,18 @@ public class MindMapSoftware extends Application{
         TextField searchInput = new TextField();
         Button searchSubmitButton = new Button("Search");
 
-        // Toolbar sub UI and button events
-        Popup newBoardPopup = new Popup();
-        Text newBoardPopupText = new Text("Enter name");
-        TextField newBoardPopupInput = new TextField();
-        Button newBoardConfirm = new Button("Create");
-        newBoardConfirm.setOnAction(e -> {
-            Board newBoard = new Board(newBoardPopupInput.getText(), new ArrayList<Element>());
-            active = newBoard;
-            newBoardPopup.hide();
-            // refresh the main section of the UI
-        });
-        VBox newBoardPopupRoot = new VBox();
-        newBoardPopupRoot.getChildren().addAll(newBoardPopupText, newBoardPopupInput, newBoardConfirm);
-
+        // Toolbar sub UI and button eventa
         newBoardButton.setOnAction(e -> {
-            if (!newBoardPopup.isShowing()){
-                newBoardPopup.show(primaryStage);
-            } else {
-                newBoardPopup.hide();
-            }
+                newBoardPopup();
         });
 
         newCustomNodeButton.setOnAction(e -> {
             CustomNode tempNode = new CustomNode();
-            ArrayList<Element> tempArray = active.getContent().add(tempNode, active.getContent().size());
-            active.setContent();
+            ArrayList<Element> currentContent = active.getContent();
+            currentContent.add(tempNode);
+            active.setContent(currentContent);
+            // Render node to screen
+            // Enable editing of the node
 
         });
 
@@ -174,11 +171,11 @@ public class MindMapSoftware extends Application{
         });
 
         quickAddToggleButton.setOnAction(e -> {
-            boolean enabled = false;
+            
             if (enabled == false){
-                quickAddToggleButton.setStyle("-fx-background-color: #0000ff");
+                quickAddToggleButton.setStyle("-fx-background-color: #00ff00");
                 enabled = true;
-            } else if (enabled == true) {
+            } else {
                 quickAddToggleButton.setStyle("-fx-background-color: #ff0000");
                 enabled = false;
             }
@@ -219,8 +216,24 @@ public class MindMapSoftware extends Application{
         toolbar.setContent(hbox);
 
         // Placeholder
-        Rectangle mapPlaceholder = new Rectangle(960, 550);
-        root.getChildren().addAll(toolbar, mapPlaceholder);
+        //Rectangle mapPlaceholder = new Rectangle(960, 550);
+        Button testButton = new Button("Click me");
+        testButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent t) {
+                showNodeStyleStage();
+            }
+        });
+
+        Button testButton2 = new Button("Click me");
+        testButton2.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent t) {
+                showConnectorStyleStage();
+            }
+        });
+
+        root.getChildren().addAll(toolbar, testButton, testButton2);
 
         Scene scene = new Scene(root, 960, 600);
         //scene.getStylesheets().add("stylesheet.css");
@@ -228,6 +241,145 @@ public class MindMapSoftware extends Application{
         primaryStage.setScene(scene);
         primaryStage.setTitle("Mind Map Software");
         primaryStage.show();
+
+    }
+
+    public void showNodeStyleStage(){
+        Stage stage = new Stage();
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(10));
+
+        // Name Color
+        Label nameColorLabel = new Label("Name Color");
+        ObservableList<String> nameColorOptions = FXCollections.observableArrayList(
+            "black",
+            "red",
+            "green",
+            "yellow",
+            "blue"
+        );
+        ComboBox<String> nameColor = new ComboBox<>(nameColorOptions);
+    
+        // Background Color
+        Label backgroundColorLabel = new Label("Background Color");
+        ObservableList<String> backgroundColorOptions = FXCollections.observableArrayList(
+            "black",
+            "red",
+            "green",
+            "yellow",
+            "blue"
+        );
+        ComboBox<String> BackgroundColor = new ComboBox<>(backgroundColorOptions);
+    
+        // Border
+        Label borderLabel = new Label("Border Style");
+        ObservableList<String> borderOptions = FXCollections.observableArrayList(
+            "rectangle",
+            "round",
+            "cloud"
+        );
+        ComboBox<String> BorderStyle = new ComboBox<>(borderOptions);
+    
+        // BorderColor
+        Label borderColorLabel = new Label("Border Color");
+        ObservableList<String> borderColorOptions = FXCollections.observableArrayList(
+            "black",
+            "red",
+            "green",
+            "yellow",
+            "blue"
+        );
+        ComboBox<String> BorderColor = new ComboBox<>(borderColorOptions);
+    
+        // Center
+        CheckBox isCenter = new CheckBox("Center Node");
+
+        grid.add(nameColorLabel, 0, 0);
+        grid.add(nameColor, 1, 0);
+        grid.add(backgroundColorLabel, 0, 1);
+        grid.add(BackgroundColor, 1, 1);
+        grid.add(borderLabel, 0, 2);
+        grid.add(BorderStyle, 1, 2);
+        grid.add(borderColorLabel, 0, 3);
+        grid.add(BorderColor, 1, 3);
+        grid.add(isCenter, 0, 4);
+
+        Scene scene = new Scene (grid, 300, 300);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public void showConnectorStyleStage(){
+        Stage stage = new Stage();
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(10));
+
+       
+    
+        // Label Color
+        Label labelColorLabel = new Label("Label Color");
+        ObservableList<String> labelColorOptions = FXCollections.observableArrayList(
+            "black",
+            "red",
+            "green",
+            "yellow",
+            "blue"
+        );
+        ComboBox<String> labelColor = new ComboBox<>(labelColorOptions);
+
+        // Color
+        Label lineColorLabel = new Label("Line Color");
+        ObservableList<String> lineColorOptions = FXCollections.observableArrayList(
+            "black",
+            "red",
+            "green",
+            "yellow",
+            "blue"
+        );
+        ComboBox<String> lineColor = new ComboBox<>(lineColorOptions);
+
+        // Type
+        Label typeLabel = new Label("Type");
+        ObservableList<String> typeOptions = FXCollections.observableArrayList(
+            "undirected no dash",
+            "undirected dash",
+            "directed no dash",
+            "directed dash"
+        );
+        ComboBox<String> type = new ComboBox<>(typeOptions);
+
+        grid.add(labelColorLabel, 0, 0);
+        grid.add(labelColor, 1, 0);
+        grid.add(lineColorLabel, 0, 1);
+        grid.add(lineColor, 1, 1);
+        grid.add(typeLabel, 0, 2);
+        grid.add(type, 1, 2);
+
+        Scene scene = new Scene (grid, 300, 300);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public void newBoardPopup(){
+
+        Stage stage = new Stage();
+        Text newBoardPopupText = new Text("Enter name");
+        TextField newBoardPopupInput = new TextField();
+        Button newBoardConfirm = new Button("Create");
+        newBoardConfirm.setOnAction(e -> {
+            Board newBoard = new Board(newBoardPopupInput.getText(), new ArrayList<Element>());
+            active = newBoard;
+            stage.hide();
+            // refresh the main section of the UI
+        });
+
+        VBox newBoardPopupRoot = new VBox();
+        newBoardPopupRoot.setPadding(new Insets(10));
+        newBoardPopupRoot.getChildren().addAll(newBoardPopupText, newBoardPopupInput, newBoardConfirm);
+
+        Scene scene = new Scene (newBoardPopupRoot, 300, 300);
+        stage.setScene(scene);
+        stage.show();
 
     }
 }
