@@ -5,12 +5,17 @@ import java.util.ArrayList;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
@@ -66,7 +71,7 @@ public class MindMapSoftware extends Application{
             out.writeObject(active);
             out.close();
             fileOut.close();
-            System.out.printf("Serialized data is saved in " + filename);
+            System.out.printf("Serialized data is saved in " + filename + "\n");
         } catch (IOException i) {
             i.printStackTrace();
         }
@@ -132,6 +137,7 @@ public class MindMapSoftware extends Application{
         VBox root = new VBox();
         TitledPane toolbar = new TitledPane();
         HBox hbox = new HBox();
+        Pane mapSpace = new Pane();
 
         // Toolbar buttons
         Button newBoardButton = new Button("New Board");
@@ -146,22 +152,66 @@ public class MindMapSoftware extends Application{
 
         // Toolbar sub UI and button eventa
         newBoardButton.setOnAction(e -> {
-                newBoardPopup();
+                newBoardPopup(mapSpace);
         });
 
         newCustomNodeButton.setOnAction(e -> {
-            CustomNode tempNode = new CustomNode();
-            ArrayList<Element> currentContent = active.getContent();
-            currentContent.add(tempNode);
-            active.setContent(currentContent);
-            // Render node to screen
-            // Enable editing of the node
+            if (active == null){
+                System.out.println("No board is active");
+            } else {
+                CustomNode tempNode = new CustomNode();
+                ArrayList<Element> currentContent = active.getContent();
+                currentContent.add(tempNode);
+                active.setContent(currentContent);
+                // Render node to screen
+                Group graphics = new Group();
+                Rectangle box = new Rectangle(300, 100, 200, 100);
+                box.setFill(Color.TRANSPARENT);
+                box.setStroke(Color.BLACK);
+                box.setStrokeWidth(5);
+                Label label = new Label(tempNode.getName());
+                label.relocate(box.getX() + (box.getWidth()/2), box.getY() + 5);
+                graphics.getChildren().addAll(box, label);
+
+                // For Testing
+                tempNode.setMedia("file:testImage.jpg");
+                //
+
+                if (tempNode.getText() != ""){
+                    Label text = new Label(tempNode.getText());
+                    text.relocate((box.getX() + (box.getWidth()/2)), box.getY() + 15);
+                    graphics.getChildren().add(text);
+                }
+                if (tempNode.getMedia() != ""){
+                    Image image = new Image(tempNode.getMedia());
+                    ImageView imageview = new ImageView();
+                    imageview.setFitHeight(50);
+                    imageview.setFitWidth(50);
+                    imageview.setImage(image);
+                    imageview.relocate((box.getX() + (box.getWidth()/2)), box.getY() + 50);
+                    graphics.getChildren().add(imageview);
+                }
+
+                root.setOnMouseDragged(event -> {
+                    //graphics.relocate((event.getX() - (box.getX()/2)), (event.getY() - (box.getY()/2)));
+                    graphics.relocate(event.getX(), event.getY());
+                });
+
+                mapSpace.getChildren().add(graphics);
+
+                // Enable editing of the node
+            }
+            
 
         });
 
         saveButton.setOnAction(e -> {
-            save();
-            System.out.println("Saved");
+            if (active == null){
+                System.out.println("No board is active");
+            } else {
+                save();
+                System.out.println("Saved");
+            }
         });
 
         loadButton.setOnAction(e -> {
@@ -182,20 +232,32 @@ public class MindMapSoftware extends Application{
         });
 
         upLayerButton.setOnAction(e -> {
-            // Clear screen
-            // Load map from variable from last use of downLayerButon
+            if (active == null){
+                System.out.println("No board is active");
+            } else {
+                // Clear screen
+                // Load map from variable from last use of downLayerButon
+            }
         });
 
         downLayerButton.setOnAction(e -> {
-            // Locate the content attribute of the currently selected Node
-            // Clear the screen of the current map, storing contents in variable
-            // Load the contents of content to the screen
-            // Optional: Cool animation
-            // Optional: Some kind of layer tracker
+            if (active == null){
+                System.out.println("No board is active");
+            } else {
+                // Locate the content attribute of the currently selected Node
+                // Clear the screen of the current map, storing contents in variable
+                // Load the contents of content to the screen
+                // Optional: Cool animation
+                // Optional: Some kind of layer tracker
+            }
         });
 
         searchSubmitButton.setOnAction(e -> {
-            System.out.println(search(searchInput.getText(), active.getContent()));
+            if (active == null){
+                System.out.println("No board is active");
+            } else {
+                System.out.println(search(searchInput.getText(), active.getContent()));
+            }
         });
 
         // Toolbar arrangements
@@ -233,7 +295,7 @@ public class MindMapSoftware extends Application{
             }
         });
 
-        root.getChildren().addAll(toolbar, testButton, testButton2);
+        root.getChildren().addAll(toolbar, testButton, testButton2, mapSpace);
 
         Scene scene = new Scene(root, 960, 600);
         //scene.getStylesheets().add("stylesheet.css");
@@ -304,7 +366,7 @@ public class MindMapSoftware extends Application{
         grid.add(BorderColor, 1, 3);
         grid.add(isCenter, 0, 4);
 
-        Scene scene = new Scene (grid, 300, 300);
+        Scene scene = new Scene (grid, 300, 150);
         stage.setScene(scene);
         stage.show();
     }
@@ -355,12 +417,12 @@ public class MindMapSoftware extends Application{
         grid.add(typeLabel, 0, 2);
         grid.add(type, 1, 2);
 
-        Scene scene = new Scene (grid, 300, 300);
+        Scene scene = new Scene (grid, 300, 100);
         stage.setScene(scene);
         stage.show();
     }
 
-    public void newBoardPopup(){
+    public void newBoardPopup(Pane mapSpace){
 
         Stage stage = new Stage();
         Text newBoardPopupText = new Text("Enter name");
@@ -370,14 +432,16 @@ public class MindMapSoftware extends Application{
             Board newBoard = new Board(newBoardPopupInput.getText(), new ArrayList<Element>());
             active = newBoard;
             stage.hide();
+            System.out.println("Creating new Board");
             // refresh the main section of the UI
+            mapSpace.getChildren().clear();
         });
 
         VBox newBoardPopupRoot = new VBox();
         newBoardPopupRoot.setPadding(new Insets(10));
         newBoardPopupRoot.getChildren().addAll(newBoardPopupText, newBoardPopupInput, newBoardConfirm);
 
-        Scene scene = new Scene (newBoardPopupRoot, 300, 300);
+        Scene scene = new Scene (newBoardPopupRoot, 300, 100);
         stage.setScene(scene);
         stage.show();
 
