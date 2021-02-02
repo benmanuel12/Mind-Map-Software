@@ -6,6 +6,7 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -165,6 +166,7 @@ public class MindMapSoftware extends Application{
                 active.setContent(currentContent);
                 // Render node to screen
                 Group graphics = new Group();
+                graphics.setStyle("-fx-border-color: black");
                 Rectangle box = new Rectangle(300, 100, 200, 100);
                 box.setFill(Color.TRANSPARENT);
                 box.setStroke(Color.BLACK);
@@ -195,6 +197,10 @@ public class MindMapSoftware extends Application{
                 root.setOnMouseDragged(event -> {
                     //graphics.relocate((event.getX() - (box.getX()/2)), (event.getY() - (box.getY()/2)));
                     graphics.relocate(event.getX(), event.getY());
+                });
+
+                graphics.setOnMouseClicked(event -> {
+                    showNodeStyleStage(graphics);
                 });
 
                 mapSpace.getChildren().add(graphics);
@@ -279,13 +285,6 @@ public class MindMapSoftware extends Application{
 
         // Placeholder
         //Rectangle mapPlaceholder = new Rectangle(960, 550);
-        Button testButton = new Button("Click me");
-        testButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent t) {
-                showNodeStyleStage();
-            }
-        });
 
         Button testButton2 = new Button("Click me");
         testButton2.setOnAction(new EventHandler<ActionEvent>() {
@@ -295,7 +294,7 @@ public class MindMapSoftware extends Application{
             }
         });
 
-        root.getChildren().addAll(toolbar, testButton, testButton2, mapSpace);
+        root.getChildren().addAll(toolbar, testButton2, mapSpace);
 
         Scene scene = new Scene(root, 960, 600);
         //scene.getStylesheets().add("stylesheet.css");
@@ -306,7 +305,9 @@ public class MindMapSoftware extends Application{
 
     }
 
-    public void showNodeStyleStage(){
+    public void showNodeStyleStage(Group group){
+
+        
         Stage stage = new Stage();
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(10));
@@ -321,6 +322,7 @@ public class MindMapSoftware extends Application{
             "blue"
         );
         ComboBox<String> nameColor = new ComboBox<>(nameColorOptions);
+
     
         // Background Color
         Label backgroundColorLabel = new Label("Background Color");
@@ -356,6 +358,22 @@ public class MindMapSoftware extends Application{
         // Center
         CheckBox isCenter = new CheckBox("Center Node");
 
+        Button saveButton = new Button("Save");
+
+        // box, label, text, image, nested
+        saveButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent t) {
+                Label nameColorOut = (Label) group.getChildren().get(1);
+                nameColorOut.setTextFill(Color.web(nameColor.getValue()));
+                Rectangle backgroundColorOut = (Rectangle) group.getChildren().get(0);
+                backgroundColorOut.setFill(Color.web(BackgroundColor.getValue()));
+                // Border Style goes here
+                backgroundColorOut.setStroke(Color.web(BorderColor.getValue()));
+                // Handle isCenter
+            }
+        });
+
         grid.add(nameColorLabel, 0, 0);
         grid.add(nameColor, 1, 0);
         grid.add(backgroundColorLabel, 0, 1);
@@ -365,6 +383,7 @@ public class MindMapSoftware extends Application{
         grid.add(borderColorLabel, 0, 3);
         grid.add(BorderColor, 1, 3);
         grid.add(isCenter, 0, 4);
+        grid.add(saveButton, 0, 5);
 
         Scene scene = new Scene (grid, 300, 150);
         stage.setScene(scene);
