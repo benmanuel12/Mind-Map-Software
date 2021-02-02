@@ -97,6 +97,62 @@ public class MindMapSoftware extends Application{
         }
     }
 
+    public static void refreshScreen(ArrayList<Element> targetList, Pane mapSpace) {
+        for (Element element : targetList){
+            if (element instanceof CustomNode){
+                CustomNode node = (CustomNode) element;
+                Group graphics = node.getGraphics();
+                graphics.setStyle("-fx-border-color: black");
+                Rectangle box = new Rectangle(300, 100, 200, 100);
+                box.setFill(Color.TRANSPARENT);
+                box.setStroke(Color.BLACK);
+                box.setStrokeWidth(5);
+                EditableLabel label = new EditableLabel(node.getName());
+                label.relocate(box.getX() + (box.getWidth()/2), box.getY() + 5);
+                graphics.getChildren().addAll(box, label);
+        
+                // For Testing
+                node.setMedia("file:testImage.jpg");
+                //
+        
+                if (node.getText() != ""){
+                    EditableLabel text = new EditableLabel(node.getText());
+                    text.relocate((box.getX() + (box.getWidth()/2)), box.getY() + 15);
+                    graphics.getChildren().add(text);
+                }
+                if (node.getMedia() != ""){
+                    Image image = new Image(node.getMedia());
+                    ImageView imageview = new ImageView();
+                    imageview.setFitHeight(50);
+                    imageview.setFitWidth(50);
+                    imageview.setImage(image);
+                    imageview.relocate((box.getX() + (box.getWidth()/2)), box.getY() + 50);
+                    graphics.getChildren().add(imageview);
+                }
+        
+                graphics.setOnMouseDragged(event -> {
+                    //graphics.relocate((event.getX() - (box.getX()/2)), (event.getY() - (box.getY()/2)));
+                    graphics.relocate(event.getX(), event.getY());
+                });
+        
+                // graphics.setOnMouseClicked(event -> {
+                //     showNodeStyleStage(graphics);
+                // });
+        
+                mapSpace.getChildren().add(graphics);
+                
+
+                if (node.getContent().size() != 0){
+                    // The node contains more nodes and connectors
+                    refreshScreen(node.getContent(), mapSpace);
+                }
+        } else if (element instanceof Connector){
+            Connector connector = (Connector) element;
+            // Render the connector
+        } 
+    }     
+}
+
     public static void main(String[] args){
         launch(args);
     }
@@ -132,13 +188,14 @@ public class MindMapSoftware extends Application{
     }
 
     public void start(Stage primaryStage){
-        FileChooser fileChooser = new FileChooser();   
-
-        // Core UI elements
+        FileChooser fileChooser = new FileChooser();  
+        
         VBox root = new VBox();
-        TitledPane toolbar = new TitledPane();
-        HBox hbox = new HBox();
-        Pane mapSpace = new Pane();
+    TitledPane toolbar = new TitledPane();
+    HBox hbox = new HBox();
+    Pane mapSpace = new Pane();
+
+        
 
         // Toolbar buttons
         Button newBoardButton = new Button("New Board");
@@ -165,45 +222,7 @@ public class MindMapSoftware extends Application{
                 currentContent.add(tempNode);
                 active.setContent(currentContent);
                 // Render node to screen
-                Group graphics = new Group();
-                graphics.setStyle("-fx-border-color: black");
-                Rectangle box = new Rectangle(300, 100, 200, 100);
-                box.setFill(Color.TRANSPARENT);
-                box.setStroke(Color.BLACK);
-                box.setStrokeWidth(5);
-                Label label = new Label(tempNode.getName());
-                label.relocate(box.getX() + (box.getWidth()/2), box.getY() + 5);
-                graphics.getChildren().addAll(box, label);
-
-                // For Testing
-                tempNode.setMedia("file:testImage.jpg");
-                //
-
-                if (tempNode.getText() != ""){
-                    Label text = new Label(tempNode.getText());
-                    text.relocate((box.getX() + (box.getWidth()/2)), box.getY() + 15);
-                    graphics.getChildren().add(text);
-                }
-                if (tempNode.getMedia() != ""){
-                    Image image = new Image(tempNode.getMedia());
-                    ImageView imageview = new ImageView();
-                    imageview.setFitHeight(50);
-                    imageview.setFitWidth(50);
-                    imageview.setImage(image);
-                    imageview.relocate((box.getX() + (box.getWidth()/2)), box.getY() + 50);
-                    graphics.getChildren().add(imageview);
-                }
-
-                root.setOnMouseDragged(event -> {
-                    //graphics.relocate((event.getX() - (box.getX()/2)), (event.getY() - (box.getY()/2)));
-                    graphics.relocate(event.getX(), event.getY());
-                });
-
-                graphics.setOnMouseClicked(event -> {
-                    showNodeStyleStage(graphics);
-                });
-
-                mapSpace.getChildren().add(graphics);
+                refreshScreen(active.getContent(), mapSpace);
 
                 // Enable editing of the node
             }
@@ -305,7 +324,7 @@ public class MindMapSoftware extends Application{
 
     }
 
-    public void showNodeStyleStage(Group group){
+    public static void showNodeStyleStage(Group group){
 
         
         Stage stage = new Stage();

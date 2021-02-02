@@ -101,7 +101,7 @@ public class CustomNode extends Element implements Serializable {
         this.text = text;
     }
 
-    public String getGraphics() {
+    public Group getGraphics() {
         return graphics;
     }
 
@@ -137,6 +137,7 @@ public class CustomNode extends Element implements Serializable {
         this.content = new ArrayList<>();
         this.media = "";
         this.text = "Add text";
+        this.graphics = new Group();
     }
 
     @Override
