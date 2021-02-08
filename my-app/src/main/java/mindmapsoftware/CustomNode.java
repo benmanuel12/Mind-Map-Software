@@ -19,8 +19,9 @@ public class CustomNode extends Element implements Serializable {
     private ArrayList<Element> content;
     private String media;
     private String text;
-    private Group graphics;
     private boolean isRendered;
+    private double xCoord;
+    private double yCoord;
 
     public String getName() {
         return name;
@@ -102,14 +103,6 @@ public class CustomNode extends Element implements Serializable {
         this.text = text;
     }
 
-    public Group getGraphics() {
-        return graphics;
-    }
-
-    public void setGraphics(Group graphics) {
-        this.graphics = graphics;
-    }
-
     public boolean getIsRendered() {
         return isRendered;
     }
@@ -118,7 +111,24 @@ public class CustomNode extends Element implements Serializable {
         this.isRendered = isRendered;
     }
 
-    public CustomNode(String name, String nameColor, String backgroundColor, String border, String borderColor, ArrayList<Connector> connectedTo, boolean center, ArrayList<Element> content, String media, String text, Group graphics, boolean isRendered) {
+    public double getXCoord() {
+        return xCoord;
+    }
+
+    public void setXCoord(double xCoord) {
+        this.xCoord = xCoord;
+    }
+
+    public double getYCoord() {
+        return yCoord;
+    }
+
+    public void setYCoord(double yCoord) {
+        this.yCoord = yCoord;
+    }
+
+
+    public CustomNode(String name, String nameColor, String backgroundColor, String border, String borderColor, ArrayList<Connector> connectedTo, boolean center, ArrayList<Element> content, String media, String text, boolean isRendered, double xCoord, double yCoord) {
         // super.setId(active.getIdCounter());
         // active.setIdCounter(active.getIdCounter() + 1);
         this.name = name;
@@ -131,9 +141,9 @@ public class CustomNode extends Element implements Serializable {
         this.content = content;
         this.media = media;
         this.text = text;
-        this.graphics = graphics;
         this.isRendered = isRendered;
-
+        this.xCoord = xCoord;
+        this.yCoord = yCoord;
     }
 
     public CustomNode(){
@@ -149,7 +159,6 @@ public class CustomNode extends Element implements Serializable {
         this.content = new ArrayList<>();
         this.media = "";
         this.text = "Add text";
-        this.graphics = new Group();
         this.isRendered = false;
     }
 
@@ -167,7 +176,6 @@ public class CustomNode extends Element implements Serializable {
         returnList.add(content);
         returnList.add(media);
         returnList.add(text);
-        returnList.add(graphics);
         returnList.add(isRendered);
         return returnList.toString();
     }

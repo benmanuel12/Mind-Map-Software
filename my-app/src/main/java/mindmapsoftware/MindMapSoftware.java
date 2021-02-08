@@ -81,13 +81,14 @@ public class MindMapSoftware extends Application{
         }
     }
 
-    public static void load(String filename, Pane mapSpace) {
+    public static void load(String filename, Pane mapSpace, Label footerLabel) {
         Board loadedBoard;
         try {
             FileInputStream fileIn = new FileInputStream(filename);
             ObjectInputStream in = new ObjectInputStream(fileIn);
             loadedBoard = (Board) in.readObject();
             active = loadedBoard;
+            footerLabel.setText(active.getName());
             refreshScreen(active.getContent(), mapSpace);
             in.close();
             fileIn.close();
@@ -102,63 +103,122 @@ public class MindMapSoftware extends Application{
     }
 
     public static void refreshScreen(ArrayList<Element> targetList, Pane mapSpace) {
-        for (Element element : targetList){
-            if (element instanceof CustomNode){
-                CustomNode node = (CustomNode) element;
-                Group graphics = node.getGraphics();
-                graphics.setStyle("-fx-border-color: black");
-                Rectangle box = new Rectangle(300, 100, 200, 100);
-                box.setFill(Color.TRANSPARENT);
-                box.setStroke(Color.BLACK);
-                box.setStrokeWidth(5);
-                EditableLabel label = new EditableLabel(node.getName());
-                label.relocate(box.getX() + (box.getWidth()/2), box.getY() + 5);
-                graphics.getChildren().addAll(box, label);
-        
-                // For Testing
-                node.setMedia("file:testImage.jpg");
-                //
-        
-                if (node.getText() != ""){
-                    EditableLabel text = new EditableLabel(node.getText());
-                    text.relocate((box.getX() + (box.getWidth()/2)), box.getY() + 15);
-                    graphics.getChildren().add(text);
-                }
-                if (node.getMedia() != ""){
-                    Image image = new Image(node.getMedia());
-                    ImageView imageview = new ImageView();
-                    imageview.setFitHeight(50);
-                    imageview.setFitWidth(50);
-                    imageview.setImage(image);
-                    imageview.relocate((box.getX() + (box.getWidth()/2)), box.getY() + 50);
-                    graphics.getChildren().add(imageview);
-                }
-        
-                graphics.setOnMouseDragged(event -> {
-                    graphics.relocate((event.getX() - (box.getX()/2)), (event.getY() - (box.getY()/2)));
-                    //graphics.relocate(event.getX(), event.getY());
-                });
-        
-                graphics.setOnMouseClicked(event -> {
-                    if (event.getButton() == MouseButton.SECONDARY) {
-                        showNodeStyleStage(graphics);
-                    }
-                });
-        
-                mapSpace.getChildren().add(graphics);
-                node.setisRendered(true);
+        if (mapSpace.getChildren().size() != 0) {
+            for (Element element : targetList){
+                if (element instanceof CustomNode){
+                    CustomNode node = (CustomNode) element;
+                    if (node.getIsRendered() == false) {
+                        Group graphics = new Group();
+                        graphics.setStyle("-fx-border-color: black");
+                        Rectangle box = new Rectangle(300, 100, 200, 100);
+                        box.setFill(Color.TRANSPARENT);
+                        box.setStroke(Color.BLACK);
+                        box.setStrokeWidth(5);
+                        EditableLabel label = new EditableLabel(node.getName());
+                        label.relocate(box.getX() + (box.getWidth()/2), box.getY() + 5);
+                        graphics.getChildren().addAll(box, label);
                 
-
-                if (node.getContent().size() != 0){
-                    // The node contains more nodes and connectors
-                    refreshScreen(node.getContent(), mapSpace);
+                        // For Testing
+                        node.setMedia("file:testImage.jpg");
+                        //
+                
+                        if (node.getText() != ""){
+                            EditableLabel text = new EditableLabel(node.getText());
+                            text.relocate((box.getX() + (box.getWidth()/2)), box.getY() + 15);
+                            graphics.getChildren().add(text);
+                        }
+                        if (node.getMedia() != ""){
+                            Image image = new Image(node.getMedia());
+                            ImageView imageview = new ImageView();
+                            imageview.setFitHeight(50);
+                            imageview.setFitWidth(50);
+                            imageview.setImage(image);
+                            imageview.relocate((box.getX() + (box.getWidth()/2)), box.getY() + 50);
+                            graphics.getChildren().add(imageview);
+                        }
+                
+                        graphics.setOnMouseDragged(event -> {
+                            graphics.relocate((event.getX() - (box.getX()/2)), (event.getY() - (box.getY()/2)));
+                            //graphics.relocate(event.getX(), event.getY());
+                        });
+                
+                        graphics.setOnMouseClicked(event -> {
+                            if (event.getButton() == MouseButton.SECONDARY) {
+                                showNodeStyleStage(graphics);
+                            }
+                        });
+                
+                        mapSpace.getChildren().add(graphics);
+                        node.setisRendered(true);
+                    } else {
+                        System.out.println("Node is already on screen");
+                    }
+                } else if (element instanceof Connector){
+                    Connector connector = (Connector) element;
+                    // Render the connector
                 }
-        } else if (element instanceof Connector){
-            Connector connector = (Connector) element;
-            // Render the connector
-        } 
+            }
+        } else {
+            // Pane is empty, this is a full reload
+            for (Element element : targetList){
+                if (element instanceof CustomNode){
+                    CustomNode node = (CustomNode) element;
+                    Group graphics = new Group();
+                    graphics.setStyle("-fx-border-color: black");
+                    Rectangle box = new Rectangle(300, 100, 200, 100);
+                    box.setFill(Color.TRANSPARENT);
+                    box.setStroke(Color.BLACK);
+                    box.setStrokeWidth(5);
+                    EditableLabel label = new EditableLabel(node.getName());
+                    label.relocate(box.getX() + (box.getWidth()/2), box.getY() + 5);
+                    graphics.getChildren().addAll(box, label);
+            
+                    // For Testing
+                    node.setMedia("file:testImage.jpg");
+                    //
+            
+                    if (node.getText() != ""){
+                        EditableLabel text = new EditableLabel(node.getText());
+                        text.relocate((box.getX() + (box.getWidth()/2)), box.getY() + 15);
+                        graphics.getChildren().add(text);
+                    }
+                    if (node.getMedia() != ""){
+                        Image image = new Image(node.getMedia());
+                        ImageView imageview = new ImageView();
+                        imageview.setFitHeight(50);
+                        imageview.setFitWidth(50);
+                        imageview.setImage(image);
+                        imageview.relocate((box.getX() + (box.getWidth()/2)), box.getY() + 50);
+                        graphics.getChildren().add(imageview);
+                    }
+            
+                    graphics.setOnMouseDragged(event -> {
+                        graphics.relocate((event.getX() - (box.getX()/2)), (event.getY() - (box.getY()/2)));
+                        //graphics.relocate(event.getX(), event.getY());
+                    });
+            
+                    graphics.setOnMouseClicked(event -> {
+                        if (event.getButton() == MouseButton.SECONDARY) {
+                            showNodeStyleStage(graphics);
+                        }
+                    });
+            
+                    mapSpace.getChildren().add(graphics);
+                    graphics.relocate(node.getXCoord(), node.getYCoord());
+                    node.setisRendered(true);
+                    node.setXCoord(box.getX());
+                    node.setYCoord(box.getY());
+    
+                } else if (element instanceof Connector){
+                    Connector connector = (Connector) element;
+                    // Render the connector
+                }
+            }
+        }
+
+            
     }     
-}
+
 
     public static void main(String[] args){
         launch(args);
@@ -201,7 +261,10 @@ public class MindMapSoftware extends Application{
         TitledPane toolbar = new TitledPane();
         HBox hbox = new HBox();
         Pane mapSpace = new Pane();
+
+        // Supposedly makes the lag on dragging boxes reduce. Has negligible effect
         mapSpace.setCache(true);
+
         HBox footer = new HBox();
         Label footerLabel = new Label ("No open Board");
         footer.getChildren().add(footerLabel);
@@ -254,7 +317,7 @@ public class MindMapSoftware extends Application{
         loadButton.setOnAction(e -> {
             File selectedFile = fileChooser.showOpenDialog(primaryStage);
             if (selectedFile != null) {
-                load(selectedFile.getName(), mapSpace);
+                load(selectedFile.getName(), mapSpace, footerLabel);
             System.out.println("Loaded: " + selectedFile.getName());
             } else {
                 System.out.println("No file selected");
