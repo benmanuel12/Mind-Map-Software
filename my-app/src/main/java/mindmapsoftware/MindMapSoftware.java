@@ -194,6 +194,8 @@ public class MindMapSoftware extends Application{
             
                     graphics.setOnMouseDragged(event -> {
                         graphics.relocate((event.getX() - (box.getX()/2)), (event.getY() - (box.getY()/2)));
+                        node.setXCoord(event.getX() - (box.getX()/2));
+                        node.setYCoord(event.getY() - (box.getY()/2));
                         //graphics.relocate(event.getX(), event.getY());
                     });
             
