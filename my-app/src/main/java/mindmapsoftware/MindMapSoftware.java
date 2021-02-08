@@ -13,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -30,6 +31,8 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 
 
@@ -78,13 +81,14 @@ public class MindMapSoftware extends Application{
         }
     }
 
-    public static void load(String filename) {
+    public static void load(String filename, Pane mapSpace) {
         Board loadedBoard;
         try {
             FileInputStream fileIn = new FileInputStream(filename);
             ObjectInputStream in = new ObjectInputStream(fileIn);
             loadedBoard = (Board) in.readObject();
             active = loadedBoard;
+            refreshScreen(active.getContent(), mapSpace);
             in.close();
             fileIn.close();
         } catch (IOException i) {
@@ -131,15 +135,18 @@ public class MindMapSoftware extends Application{
                 }
         
                 graphics.setOnMouseDragged(event -> {
-                    //graphics.relocate((event.getX() - (box.getX()/2)), (event.getY() - (box.getY()/2)));
-                    graphics.relocate(event.getX(), event.getY());
+                    graphics.relocate((event.getX() - (box.getX()/2)), (event.getY() - (box.getY()/2)));
+                    //graphics.relocate(event.getX(), event.getY());
                 });
         
-                // graphics.setOnMouseClicked(event -> {
-                //     showNodeStyleStage(graphics);
-                // });
+                graphics.setOnMouseClicked(event -> {
+                    if (event.getButton() == MouseButton.SECONDARY) {
+                        showNodeStyleStage(graphics);
+                    }
+                });
         
                 mapSpace.getChildren().add(graphics);
+                node.setisRendered(true);
                 
 
                 if (node.getContent().size() != 0){
@@ -190,10 +197,15 @@ public class MindMapSoftware extends Application{
     public void start(Stage primaryStage){
         FileChooser fileChooser = new FileChooser();  
         
-        VBox root = new VBox();
-    TitledPane toolbar = new TitledPane();
-    HBox hbox = new HBox();
-    Pane mapSpace = new Pane();
+        BorderPane root = new BorderPane();
+        TitledPane toolbar = new TitledPane();
+        HBox hbox = new HBox();
+        Pane mapSpace = new Pane();
+        mapSpace.setCache(true);
+        HBox footer = new HBox();
+        Label footerLabel = new Label ("No open Board");
+        footer.getChildren().add(footerLabel);
+
 
         
 
@@ -210,7 +222,7 @@ public class MindMapSoftware extends Application{
 
         // Toolbar sub UI and button eventa
         newBoardButton.setOnAction(e -> {
-                newBoardPopup(mapSpace);
+                newBoardPopup(mapSpace, footerLabel);
         });
 
         newCustomNodeButton.setOnAction(e -> {
@@ -241,8 +253,13 @@ public class MindMapSoftware extends Application{
 
         loadButton.setOnAction(e -> {
             File selectedFile = fileChooser.showOpenDialog(primaryStage);
-            load(selectedFile.getName());
+            if (selectedFile != null) {
+                load(selectedFile.getName(), mapSpace);
             System.out.println("Loaded: " + selectedFile.getName());
+            } else {
+                System.out.println("No file selected");
+            }
+            
         });
 
         quickAddToggleButton.setOnAction(e -> {
@@ -313,7 +330,9 @@ public class MindMapSoftware extends Application{
             }
         });
 
-        root.getChildren().addAll(toolbar, testButton2, mapSpace);
+        root.setTop(toolbar);
+        root.setCenter(mapSpace);
+        root.setBottom(footer);
 
         Scene scene = new Scene(root, 960, 600);
         //scene.getStylesheets().add("stylesheet.css");
@@ -460,7 +479,7 @@ public class MindMapSoftware extends Application{
         stage.show();
     }
 
-    public void newBoardPopup(Pane mapSpace){
+    public void newBoardPopup(Pane mapSpace, Label footerLabel){
 
         Stage stage = new Stage();
         Text newBoardPopupText = new Text("Enter name");
@@ -470,6 +489,7 @@ public class MindMapSoftware extends Application{
             Board newBoard = new Board(newBoardPopupInput.getText(), new ArrayList<Element>());
             active = newBoard;
             stage.hide();
+            footerLabel.setText(newBoardPopupInput.getText());
             System.out.println("Creating new Board");
             // refresh the main section of the UI
             mapSpace.getChildren().clear();

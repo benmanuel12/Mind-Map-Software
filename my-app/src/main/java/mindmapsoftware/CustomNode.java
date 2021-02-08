@@ -20,6 +20,7 @@ public class CustomNode extends Element implements Serializable {
     private String media;
     private String text;
     private Group graphics;
+    private boolean isRendered;
 
     public String getName() {
         return name;
@@ -109,7 +110,15 @@ public class CustomNode extends Element implements Serializable {
         this.graphics = graphics;
     }
 
-    public CustomNode(String name, String nameColor, String backgroundColor, String border, String borderColor, ArrayList<Connector> connectedTo, boolean center, ArrayList<Element> content, String media, String text) {
+    public boolean getIsRendered() {
+        return isRendered;
+    }
+
+    public void setisRendered(boolean isRendered) {
+        this.isRendered = isRendered;
+    }
+
+    public CustomNode(String name, String nameColor, String backgroundColor, String border, String borderColor, ArrayList<Connector> connectedTo, boolean center, ArrayList<Element> content, String media, String text, Group graphics, boolean isRendered) {
         // super.setId(active.getIdCounter());
         // active.setIdCounter(active.getIdCounter() + 1);
         this.name = name;
@@ -122,6 +131,9 @@ public class CustomNode extends Element implements Serializable {
         this.content = content;
         this.media = media;
         this.text = text;
+        this.graphics = graphics;
+        this.isRendered = isRendered;
+
     }
 
     public CustomNode(){
@@ -138,6 +150,7 @@ public class CustomNode extends Element implements Serializable {
         this.media = "";
         this.text = "Add text";
         this.graphics = new Group();
+        this.isRendered = false;
     }
 
     @Override
@@ -154,6 +167,8 @@ public class CustomNode extends Element implements Serializable {
         returnList.add(content);
         returnList.add(media);
         returnList.add(text);
+        returnList.add(graphics);
+        returnList.add(isRendered);
         return returnList.toString();
     }
 
