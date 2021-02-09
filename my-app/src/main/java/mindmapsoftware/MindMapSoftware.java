@@ -6,7 +6,6 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -18,12 +17,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.collections.FXCollections;
@@ -31,7 +31,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 
@@ -156,6 +155,26 @@ public class MindMapSoftware extends Application{
                 } else if (element instanceof Connector){
                     Connector connector = (Connector) element;
                     // Render the connector
+                    if (connector.getIsRendered() == false){
+                        /*
+                        // For each pair of nodes that each reference a Connector in the targetlist in their connectedTo attribute
+                            StackPane lineHolder = new StackPane();
+                            Line line = new Line();
+                            line.setStroke(Color.web(connector.getColor()));
+                            EditableLabel lineLabel = new EditableLabel("Label text here");
+                            lineHolder.getChildren().addAll(line, lineLabel);
+
+                            line.setOnMouseClicked(event -> {
+                                if (event.getButton() == MouseButton.SECONDARY) {
+                                    showConnectorStyleStage(line, lineLabel);
+                                }
+                            });
+                            // enable proper creation
+                            // enable them to move when nodes move
+                            // need some way to actually create them from the UI
+                            */
+
+                    }
                 }
             }
         } else {
@@ -178,7 +197,7 @@ public class MindMapSoftware extends Application{
                     //
             
                     if (node.getText() != ""){
-                        EditableLabel text = new EditableLabel(node.getText());
+                        EditableLabel text = new EditableLabel(linkFinder(node.getText()));
                         text.relocate((box.getX() + (box.getWidth()/2)), box.getY() + 15);
                         graphics.getChildren().add(text);
                     }
@@ -214,11 +233,10 @@ public class MindMapSoftware extends Application{
                 } else if (element instanceof Connector){
                     Connector connector = (Connector) element;
                     // Render the connector
+                    // Same as above, but so little works I'm not going to bother to copy paste it here yet
                 }
             }
-        }
-
-            
+        }    
     }     
 
 
@@ -384,17 +402,6 @@ public class MindMapSoftware extends Application{
         toolbar.setText("Toolbar");
         toolbar.setContent(hbox);
 
-        // Placeholder
-        //Rectangle mapPlaceholder = new Rectangle(960, 550);
-
-        Button testButton2 = new Button("Click me");
-        testButton2.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent t) {
-                showConnectorStyleStage();
-            }
-        });
-
         root.setTop(toolbar);
         root.setCenter(mapSpace);
         root.setBottom(footer);
@@ -493,7 +500,7 @@ public class MindMapSoftware extends Application{
         stage.show();
     }
 
-    public void showConnectorStyleStage(){
+    public static void showConnectorStyleStage(Line line, Label label){
         Stage stage = new Stage();
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(10));
@@ -532,12 +539,25 @@ public class MindMapSoftware extends Application{
         );
         ComboBox<String> type = new ComboBox<>(typeOptions);
 
+        Button saveButton = new Button("Save");
+
+        // label color, line color, type
+        saveButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent t) {
+                label.setTextFill(Color.web(labelColor.getValue()));
+                line.setStroke(Color.web(lineColor.getValue()));
+                // Handle dashed lines
+            }
+        });
+
         grid.add(labelColorLabel, 0, 0);
         grid.add(labelColor, 1, 0);
         grid.add(lineColorLabel, 0, 1);
         grid.add(lineColor, 1, 1);
         grid.add(typeLabel, 0, 2);
         grid.add(type, 1, 2);
+        grid.add(saveButton, 0, 3);
 
         Scene scene = new Scene (grid, 300, 100);
         stage.setScene(scene);

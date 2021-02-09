@@ -2,19 +2,19 @@ package mindmapsoftware;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Connector extends Element implements Serializable {
 
     private String label;
 
-    public Connector(String label, String labelColor, String color, String type) {
+    public Connector(String label, String labelColor, String color, String type, boolean isRendered) {
         // super.setId(active.getIdCounter());
         // active.setIdCounter(active.getIdCounter() + 1);
         this.label = label;
         this.labelColor = labelColor;
         this.color = color;
         this.type = type;
+        this.isRendered = isRendered;
     }
 
     public Connector() {
@@ -24,6 +24,8 @@ public class Connector extends Element implements Serializable {
         this.labelColor = "black";
         this.color = "black";
         this.type = "line";
+        this.isRendered = false;
+
     }
 
     /*
@@ -37,6 +39,7 @@ public class Connector extends Element implements Serializable {
     private String labelColor;
     private String color;
     private String type;
+    private boolean isRendered;
 
     public String getLabel() {
         return label;
@@ -59,7 +62,7 @@ public class Connector extends Element implements Serializable {
     }
 
     public void setColor(String color) {
-        color = color;
+        this.color = color;
     }
 
     public String getType() {
@@ -70,6 +73,14 @@ public class Connector extends Element implements Serializable {
         this.type = type;
     }
 
+    public boolean getIsRendered() {
+        return isRendered;
+    }
+
+    public void setisRendered(boolean isRendered) {
+        this.isRendered = isRendered;
+    }
+
     @Override
     public String toString() {
         ArrayList<Object> returnList = new ArrayList<>();
@@ -78,21 +89,7 @@ public class Connector extends Element implements Serializable {
         returnList.add(labelColor);
         returnList.add(color);
         returnList.add(type);
+        returnList.add(isRendered);
         return returnList.toString();
     }
-
-//    public void addNode(Node node, ){
-//        ArrayList tempArray = this.getConnectedTo();
-//        tempArray.add(connector);
-//        this.setConnectedTo(tempArray);
-//    }
-//    public void removeNode{
-//        ArrayList<Connector> tempArray = this.getConnectedTo();
-//        for (Connector connector : tempArray){
-//            if (connector.getId() == id){
-//                tempArray.remove(Arrays.asList(tempArray).indexOf(connector));
-//            };
-//        }
-//    }
-
 }

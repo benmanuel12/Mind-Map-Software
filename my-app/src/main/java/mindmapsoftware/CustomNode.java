@@ -3,10 +3,6 @@ package mindmapsoftware;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javafx.scene.Group;
 
 public class CustomNode extends Element implements Serializable {
     private String name;
