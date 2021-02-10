@@ -28,18 +28,12 @@ public class Connector extends Element implements Serializable {
 
     }
 
-    /*
-    Connectors no longer require reference to what Nodes they are connected to
-    At render, scan the data structure for Node's connected to Attribute
-    Connectors referenced by Nodes must have one end attached to each nodes they reference
-    UI control will restrict the limit to 2
-    Connectors with no reference either won't render, or will render off to one side
-     */
-
     private String labelColor;
     private String color;
     private String type;
     private boolean isRendered;
+    private CustomNode node1;
+    private CustomNode node2;
 
     public String getLabel() {
         return label;
