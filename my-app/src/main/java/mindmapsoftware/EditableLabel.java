@@ -44,3 +44,11 @@ class EditableLabel extends Label {
     }
 
 }
+
+/*
+This piece of code creates a subclass of Label that also contains a TextField attribute
+Upon a double (left) click, the value of the Label is inserted into the TextField and the TextField is given focus.
+If the user then changes the text in the TextField and pressed Enter, the TextField is vanished and the Label's text
+is set to the contents of the TextField.
+If the user instead presses Escape, the TextField is vanished and the Label's text is set to an empty string.
+*/

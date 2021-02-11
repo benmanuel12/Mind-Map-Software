@@ -7,20 +7,13 @@ public class Board implements Serializable{
 
     //final static long serialVersionUID;
     private String name;
-    private ArrayList<Element> content;
-    // private int idCounter = 0;
+    private ArrayList<CustomNode> nodeContent;
+    private ArrayList<Connector> connectorContent;
 
-    // public int getIdCounter() {
-    //     return this.idCounter;
-    // }
-
-    // public void setIdCounter(int idCounter) {
-    //     this.idCounter = idCounter;
-    // }
-
-    public Board(String name, ArrayList<Element> content) {
+    public Board(String name, ArrayList<CustomNode> nodeContent, ArrayList<Connector> connectorContent) {
         this.name = name;
-        this.content = content;
+        this.nodeContent = nodeContent;
+        this.connectorContent = connectorContent;
     }
 
     public String getName() {
@@ -31,19 +24,23 @@ public class Board implements Serializable{
         this.name = name;
     }
 
-    public ArrayList<Element> getContent() {
-        return content;
+    public ArrayList<CustomNode> getNodeContent() {
+        return nodeContent;
     }
 
-    public void setContent(ArrayList<Element> content) {
-        this.content = content;
+    public void setNodeContent(ArrayList<CustomNode> nodeContent) {
+        this.nodeContent = nodeContent;
+    }
+
+    public ArrayList<Connector> getConnectorContent() {
+        return connectorContent;
+    }
+
+    public void setConnectorContent(ArrayList<Connector> connectorContent) {
+        this.connectorContent = connectorContent;
     }
 
     public String toString(){
-        return this.content.toString();
+        return this.nodeContent.toString() + this.connectorContent.toString();
     }
-
-
-
-
 }

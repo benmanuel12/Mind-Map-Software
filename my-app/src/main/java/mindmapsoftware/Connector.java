@@ -8,8 +8,6 @@ public class Connector extends Element implements Serializable {
     private String label;
 
     public Connector(String label, String labelColor, String color, String type, boolean isRendered) {
-        // super.setId(active.getIdCounter());
-        // active.setIdCounter(active.getIdCounter() + 1);
         this.label = label;
         this.labelColor = labelColor;
         this.color = color;
@@ -18,8 +16,6 @@ public class Connector extends Element implements Serializable {
     }
 
     public Connector() {
-        // super.setId(active.getIdCounter());
-        // active.setIdCounter(active.getIdCounter() + 1);
         this.label = "Add label";
         this.labelColor = "black";
         this.color = "black";
@@ -75,6 +71,22 @@ public class Connector extends Element implements Serializable {
         this.isRendered = isRendered;
     }
 
+    public CustomNode getNode1() {
+        return node1;
+    }
+
+    public void setNode1(CustomNode node1) {
+        this.node1 = node1;
+    }
+
+    public CustomNode getNode2() {
+        return node2;
+    }
+
+    public void setNode2(CustomNode node2) {
+        this.node2 = node2;
+    }
+
     @Override
     public String toString() {
         ArrayList<Object> returnList = new ArrayList<>();
@@ -84,6 +96,8 @@ public class Connector extends Element implements Serializable {
         returnList.add(color);
         returnList.add(type);
         returnList.add(isRendered);
+        returnList.add(node1);
+        returnList.add(node2);
         return returnList.toString();
     }
 }

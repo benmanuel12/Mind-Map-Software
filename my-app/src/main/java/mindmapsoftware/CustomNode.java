@@ -10,9 +10,9 @@ public class CustomNode extends Element implements Serializable {
     private String backgroundColor;
     private String border;
     private String borderColor;
-    private ArrayList<Connector> connectedTo;
     private boolean center;
-    private ArrayList<Element> content;
+    private ArrayList<CustomNode> nodeContent;
+    private ArrayList<Connector> connectorContent;
     private String media;
     private String text;
     private boolean isRendered;
@@ -59,14 +59,6 @@ public class CustomNode extends Element implements Serializable {
         this.borderColor = borderColor;
     }
 
-    public ArrayList<Connector> getConnectedTo() {
-        return connectedTo;
-    }
-
-    public void setConnectedTo(ArrayList<Connector> connectedTo) {
-        this.connectedTo = connectedTo;
-    }
-
     public boolean isCenter() {
         return center;
     }
@@ -75,12 +67,20 @@ public class CustomNode extends Element implements Serializable {
         this.center = center;
     }
 
-    public ArrayList<Element> getContent() {
-        return content;
+    public ArrayList<CustomNode> getNodeContent() {
+        return nodeContent;
     }
 
-    public void setContent(ArrayList<Element> content) {
-        this.content = content;
+    public void setNodeContent(ArrayList<CustomNode> nodeContent) {
+        this.nodeContent = nodeContent;
+    }
+
+    public ArrayList<Connector> getConnectorContent() {
+        return connectorContent;
+    }
+
+    public void setConnectorContent(ArrayList<Connector> connectorContent) {
+        this.connectorContent = connectorContent;
     }
 
     public String getMedia() {
@@ -124,17 +124,15 @@ public class CustomNode extends Element implements Serializable {
     }
 
 
-    public CustomNode(String name, String nameColor, String backgroundColor, String border, String borderColor, ArrayList<Connector> connectedTo, boolean center, ArrayList<Element> content, String media, String text, boolean isRendered, double xCoord, double yCoord) {
-        // super.setId(active.getIdCounter());
-        // active.setIdCounter(active.getIdCounter() + 1);
+    public CustomNode(String name, String nameColor, String backgroundColor, String border, String borderColor, boolean center, ArrayList<CustomNode> nodeContent, ArrayList<Connector> connectorContent, String media, String text, boolean isRendered, double xCoord, double yCoord) {
         this.name = name;
         this.nameColor = nameColor;
         this.backgroundColor = backgroundColor;
         this.border = border;
         this.borderColor = borderColor;
-        this.connectedTo = connectedTo;
         this.center = center;
-        this.content = content;
+        this.nodeContent = nodeContent;
+        this.connectorContent = connectorContent;
         this.media = media;
         this.text = text;
         this.isRendered = isRendered;
@@ -143,16 +141,14 @@ public class CustomNode extends Element implements Serializable {
     }
 
     public CustomNode(){
-        // super.setId(active.getIdCounter());
-        // active.setIdCounter(active.getIdCounter() + 1);
         this.name = "Add name";
         this.nameColor = "black";
         this.backgroundColor = "white";
         this.border = "solid";
         this.borderColor = "black";
-        this.connectedTo = new ArrayList<>();
         this.center = false;
-        this.content = new ArrayList<>();
+        this.nodeContent = new ArrayList<CustomNode>();
+        this.connectorContent = new ArrayList<Connector>();
         this.media = "";
         this.text = "Add text";
         this.isRendered = false;
@@ -167,9 +163,9 @@ public class CustomNode extends Element implements Serializable {
         returnList.add(backgroundColor);
         returnList.add(border);
         returnList.add(borderColor);
-        returnList.add(connectedTo);
         returnList.add(center);
-        returnList.add(content);
+        returnList.add(nodeContent);
+        returnList.add(connectorContent);
         returnList.add(media);
         returnList.add(text);
         returnList.add(isRendered);
