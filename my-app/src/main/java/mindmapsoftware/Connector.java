@@ -13,6 +13,7 @@ public class Connector extends Element implements Serializable {
         this.color = color;
         this.type = type;
         this.isRendered = isRendered;
+        // add custom nodes
     }
 
     public Connector() {
@@ -21,7 +22,7 @@ public class Connector extends Element implements Serializable {
         this.color = "black";
         this.type = "line";
         this.isRendered = false;
-
+        // add custom nodes
     }
 
     private String labelColor;

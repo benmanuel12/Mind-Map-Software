@@ -41,6 +41,7 @@ class EditableLabel extends Label {
     void toLabel(){
         this.setGraphic(null);
         this.setText(tf.getText());
+        // Reflect back to array
     }
 
 }
