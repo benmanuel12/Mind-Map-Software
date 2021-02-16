@@ -88,6 +88,7 @@ public class MindMapSoftware extends Application{
             loadedBoard = (Board) in.readObject();
             active = loadedBoard;
             footerLabel.setText(active.getName());
+            mapSpace.getChildren().clear();
             refreshScreen(active.getNodeContent(), active.getConnectorContent(), mapSpace);
             in.close();
             fileIn.close();
@@ -108,6 +109,8 @@ public class MindMapSoftware extends Application{
                     NodePane newPane = new NodePane(node);
                     mapSpace.getChildren().add(newPane);
                     newPane.relocate(newPane.getXCoord(), newPane.getYCoord());
+                    newPane.setXCoord(newPane.getTranslateX());
+                    newPane.setYCoord(newPane.getTranslateY());
                     newPane.setIsRendered(true);
                     node.setisRendered(true);
                 } else {
@@ -130,6 +133,8 @@ public class MindMapSoftware extends Application{
                 NodePane newPane = new NodePane(node);
                 mapSpace.getChildren().add(newPane);
                 newPane.relocate(newPane.getXCoord(), newPane.getYCoord());
+                newPane.setXCoord(newPane.getTranslateX());
+                newPane.setYCoord(newPane.getTranslateY());
                 newPane.setIsRendered(true);
                 node.setisRendered(true);
             }

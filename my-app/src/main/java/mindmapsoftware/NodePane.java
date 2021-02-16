@@ -1,9 +1,11 @@
 package mindmapsoftware;
 
-import javafx.event.EventHandler;
+import java.io.File;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -17,9 +19,9 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.paint.Color;
-import javafx.event.ActionEvent;
 
 public class NodePane extends Pane{
 
@@ -262,6 +264,10 @@ public class NodePane extends Pane{
             "blue"
         );
         ComboBox<String> BorderColor = new ComboBox<>(borderColorOptions);
+
+        // Media
+        Label imageLabel = new Label("Image");
+        Button imageButton = new Button("Choose");
     
         // Center
         CheckBox isCenter = new CheckBox("Center Node");
@@ -272,15 +278,31 @@ public class NodePane extends Pane{
         saveButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
-                Label nameColorOut = (Label) group.getChildren().get(1);
+                EditableLabel nameColorOut = (EditableLabel) pane.getChildren().get(1);
                 nameColorOut.setTextFill(Color.web(nameColor.getValue()));
-                Rectangle backgroundColorOut = (Rectangle) group.getChildren().get(0);
+                Rectangle backgroundColorOut = (Rectangle) pane.getChildren().get(0);
                 backgroundColorOut.setFill(Color.web(BackgroundColor.getValue()));
                 // Border Style goes here
                 backgroundColorOut.setStroke(Color.web(BorderColor.getValue()));
                 // Handle isCenter
             }
         });
+
+        // imageButton.setOnAction(new EventHandler<ActionEvent>() {
+        //     @Override
+        //     public void handle(ActionEvent t) {
+        //         FileChooser fileChooser;
+        //         File selectedFile = fileChooser.showOpenDialog(stage);
+        //         if (selectedFile != null) {
+        //             this.setMedia(selectedFile.getName());
+        //             this.node.setMedia(selectedFile.getName());
+        //             // Somehow refresh the UI or cause it to be refreshed by saving later
+        //         System.out.println("Loaded: " + selectedFile.getName());
+        //         } else {
+        //             System.out.println("No file selected");
+        //         }
+        //     }
+        // });
 
         grid.add(nameColorLabel, 0, 0);
         grid.add(nameColor, 1, 0);
@@ -290,10 +312,12 @@ public class NodePane extends Pane{
         grid.add(BorderStyle, 1, 2);
         grid.add(borderColorLabel, 0, 3);
         grid.add(BorderColor, 1, 3);
-        grid.add(isCenter, 0, 4);
-        grid.add(saveButton, 0, 5);
+        grid.add(imageLabel, 0, 4);
+        grid.add(imageButton, 1, 4);
+        grid.add(isCenter, 0, 5);
+        grid.add(saveButton, 0, 6);
 
-        Scene scene = new Scene (grid, 300, 150);
+        Scene scene = new Scene (grid, 300, 200);
         stage.setScene(scene);
         stage.show();
     }
