@@ -198,7 +198,9 @@ public class ConnectorPane extends Pane {
         saveButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
+                EditableLabel label = (EditableLabel) pane.getChildren().get(1);
                 label.setTextFill(Color.web(labelColor.getValue()));
+                Line line = (Line) pane.getChildren().get(0);
                 line.setStroke(Color.web(lineColor.getValue()));
                 // Handle dashed lines
             }

@@ -1,38 +1,29 @@
 package mindmapsoftware;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.Group;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 
 
 public class MindMapSoftware extends Application{
@@ -197,9 +188,6 @@ public class MindMapSoftware extends Application{
         Label footerLabel = new Label ("No open Board");
         footer.getChildren().add(footerLabel);
 
-
-        
-
         // Toolbar buttons
         Button newBoardButton = new Button("New Board");
         Button newCustomNodeButton = new Button("New Node");
@@ -226,11 +214,7 @@ public class MindMapSoftware extends Application{
                 active.setNodeContent(currentContent);
                 // Render node to screen
                 refreshScreen(active.getNodeContent(), active.getConnectorContent(), mapSpace);
-
-                // Enable editing of the node
             }
-            
-
         });
 
         saveButton.setOnAction(e -> {
@@ -323,10 +307,6 @@ public class MindMapSoftware extends Application{
 
     }
 
-    
-
-    
-
     public void newBoardPopup(Pane mapSpace, Label footerLabel){
 
         Stage stage = new Stage();
@@ -350,6 +330,5 @@ public class MindMapSoftware extends Application{
         Scene scene = new Scene (newBoardPopupRoot, 300, 100);
         stage.setScene(scene);
         stage.show();
-
     }
 }
