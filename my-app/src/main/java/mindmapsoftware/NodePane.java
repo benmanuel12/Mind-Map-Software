@@ -209,14 +209,18 @@ public class NodePane extends Pane{
         this.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY) {
                 showNodeStyleStage(this);
-            } else if ((event.getClickCount() == 2) && (event.getButton() == MouseButton.PRIMARY)){
+            }
+        });
+
+        rect.setOnMouseClicked(event -> {
+            if ((event.getClickCount() == 2) && (event.getButton() == MouseButton.SECONDARY)){
                 Pane parentPane = (Pane) this.getParent();
                 parentPane.getChildren().removeAll(this);
                 // Delete corresponding Custom Node
                 // Delete all connectorPanes linked to this node
                 // Delete corresponding Connectors
-            }
-        });
+                }
+            });
 
         this.getChildren().addAll(rect, titleLabel, textLabel, imageview);
 

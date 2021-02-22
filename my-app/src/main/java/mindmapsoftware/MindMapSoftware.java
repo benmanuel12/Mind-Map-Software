@@ -17,11 +17,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -31,6 +33,8 @@ public class MindMapSoftware extends Application{
 
     private static Board active;
     private static boolean enabled = false;
+    private static NodePane selected1;
+    private static NodePane selected2;
 
     // This returns rather baffling results as nodes that contain other nodes are returned in their entirity including the recursive nodes within them
     // I hope for the code that displays the results to abstract over this and just display relevant data for each node and connector
@@ -112,6 +116,7 @@ public class MindMapSoftware extends Application{
             for (Connector connector: connectorList){
                 if (connector.getIsRendered() == false) {
                     ConnectorPane newPane = new ConnectorPane(connector);
+                    newPane.getLine().setStrokeWidth(5);
                     mapSpace.getChildren().add(newPane);
                     newPane.setIsRendered(true);
                     connector.setisRendered(true);
@@ -132,6 +137,7 @@ public class MindMapSoftware extends Application{
             }
             for (Connector connector: connectorList){
                 ConnectorPane newPane = new ConnectorPane(connector);
+                newPane.getLine().setStrokeWidth(5);
                 mapSpace.getChildren().add(newPane);
                 newPane.setIsRendered(true);
                 connector.setisRendered(true);
@@ -181,11 +187,54 @@ public class MindMapSoftware extends Application{
         TitledPane toolbar = new TitledPane();
         HBox hbox = new HBox();
         Pane mapSpace = new Pane();
+        mapSpace.setPrefSize(19200, 10800);
         ScrollPane scroll = new ScrollPane(mapSpace);
+        scroll.hbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.ALWAYS);
+        scroll.vbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.ALWAYS);
+        scroll.setPrefViewportWidth(800);
+        scroll.setPrefViewportHeight(600);
         
 
         // Supposedly makes the lag on dragging boxes reduce. Has negligible effect
         mapSpace.setCache(true);
+
+        mapSpace.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+            System.out.println(event.getTarget());
+            if (event.isControlDown()){
+                if (event.getTarget() instanceof Rectangle) {
+                    if ((selected1 == null) && (selected2 == null)) {
+                        System.out.println("Selected 1");
+                        Rectangle shape = (Rectangle) event.getTarget();
+                        selected1 = (NodePane) shape.getParent();
+
+                    } else if ((selected1 instanceof NodePane) && (selected2 == null)) {
+                        Rectangle shape = (Rectangle) event.getTarget();
+                        selected2 = (NodePane) shape.getParent();
+                        System.out.println("Selected 2");
+
+                        Connector tempConnector = new Connector();
+                        tempConnector.setNode1(selected1.getNode());
+                        tempConnector.setNode2(selected2.getNode());
+                        System.out.println("Created new Connector");
+                        tempConnector.setLabel("Hi there");
+
+                        ArrayList<Connector> currentContent = active.getConnectorContent();
+                        currentContent.add(tempConnector);
+                        active.setConnectorContent(currentContent);
+                        System.out.println("Added to board");
+
+                        // Render node to screen
+                        refreshScreen(active.getNodeContent(), active.getConnectorContent(), mapSpace);
+                        System.out.println("Refreshed screen");
+
+                        // Reset selection variables
+                        selected1 = null;
+                        selected2 = null;
+                    }
+                }
+            }
+                       
+        });
 
         HBox footer = new HBox();
         Label footerLabel = new Label ("No open Board");
@@ -301,7 +350,7 @@ public class MindMapSoftware extends Application{
         root.setCenter(scroll);
         root.setBottom(footer);
 
-        Scene scene = new Scene(root, 960, 600);
+        Scene scene = new Scene(root, 800, 500);
         //scene.getStylesheets().add("stylesheet.css");
 
         primaryStage.setScene(scene);

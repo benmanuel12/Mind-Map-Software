@@ -131,6 +131,8 @@ public class ConnectorPane extends Pane {
         this.node1 = connector.getNode1();
         this.node2 = connector.getNode2();
 
+        
+
         // Find out coords of connected Nodes
         double node1X = node1.getXCoord();
         double node1Y = node1.getYCoord();
@@ -139,6 +141,11 @@ public class ConnectorPane extends Pane {
 
         // Set line to connectors
         line = new Line(node1X, node1Y, node2X, node2Y);
+
+        // Move label
+        double Xcoord = line.getStartX() + ((line.getEndX() - line.getStartX())/2);
+        double Ycoord = line.getStartY() + ((line.getEndY() - line.getStartY())/2);
+        label.relocate(Xcoord, Ycoord);
 
         // set up line style
         //line.getStrokeDashArray().addAll(dashArray);
