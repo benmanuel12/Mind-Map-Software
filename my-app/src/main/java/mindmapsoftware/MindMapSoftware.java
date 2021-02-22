@@ -14,6 +14,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.BorderPane;
@@ -180,6 +181,8 @@ public class MindMapSoftware extends Application{
         TitledPane toolbar = new TitledPane();
         HBox hbox = new HBox();
         Pane mapSpace = new Pane();
+        ScrollPane scroll = new ScrollPane(mapSpace);
+        
 
         // Supposedly makes the lag on dragging boxes reduce. Has negligible effect
         mapSpace.setCache(true);
@@ -295,7 +298,7 @@ public class MindMapSoftware extends Application{
         toolbar.setContent(hbox);
 
         root.setTop(toolbar);
-        root.setCenter(mapSpace);
+        root.setCenter(scroll);
         root.setBottom(footer);
 
         Scene scene = new Scene(root, 960, 600);

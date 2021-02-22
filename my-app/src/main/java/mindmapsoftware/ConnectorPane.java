@@ -203,6 +203,8 @@ public class ConnectorPane extends Pane {
                 Line line = (Line) pane.getChildren().get(0);
                 line.setStroke(Color.web(lineColor.getValue()));
                 // Handle dashed lines
+
+                // need to set Pane attributes and Connector attributes for proper saving
             }
         });
 
@@ -217,6 +219,16 @@ public class ConnectorPane extends Pane {
         Scene scene = new Scene (grid, 300, 100);
         stage.setScene(scene);
         stage.show();
+    }
+
+    public void syncAttr() {
+        connector.setLabel(label.getText());
+        connector.setLabelColor(labelColor);
+        connector.setColor(color);
+        connector.setType(type);
+        connector.setisRendered(isRendered);
+        connector.setNode1(node1);
+        connector.setNode2(node2);
     }
     
 }

@@ -1,6 +1,7 @@
 package mindmapsoftware;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -8,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -28,6 +30,7 @@ public class NodePane extends Pane{
     // Pane attributes
     private Rectangle rect = new Rectangle(200, 100);
     private EditableLabel titleLabel = new EditableLabel();
+
     private EditableLabel textLabel = new EditableLabel();
     private ImageView imageview = new ImageView();
 
@@ -189,7 +192,7 @@ public class NodePane extends Pane{
             imageview.setFitHeight(50);
             imageview.setFitWidth(50);
             imageview.setImage(image);
-
+            this.imageview.relocate(rect.getX() + 5, rect.getY() + 5);
         }
 
         this.setOnMouseDragged(event -> {
@@ -206,6 +209,12 @@ public class NodePane extends Pane{
         this.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY) {
                 showNodeStyleStage(this);
+            } else if ((event.getClickCount() == 2) && (event.getButton() == MouseButton.PRIMARY)){
+                Pane parentPane = (Pane) this.getParent();
+                parentPane.getChildren().removeAll(this);
+                // Delete corresponding Custom Node
+                // Delete all connectorPanes linked to this node
+                // Delete corresponding Connectors
             }
         });
 
@@ -231,7 +240,8 @@ public class NodePane extends Pane{
             "yellow",
             "blue"
         );
-        ComboBox<String> nameColor = new ComboBox<>(nameColorOptions);
+        ComboBox<String> nameColorBox = new ComboBox<>(nameColorOptions);
+        nameColorBox.setValue("black");
 
     
         // Background Color
@@ -243,7 +253,8 @@ public class NodePane extends Pane{
             "yellow",
             "blue"
         );
-        ComboBox<String> BackgroundColor = new ComboBox<>(backgroundColorOptions);
+        ComboBox<String> BackgroundColorBox = new ComboBox<>(backgroundColorOptions);
+        BackgroundColorBox.setValue("blue");
     
         // Border
         Label borderLabel = new Label("Border Style");
@@ -252,7 +263,8 @@ public class NodePane extends Pane{
             "round",
             "cloud"
         );
-        ComboBox<String> BorderStyle = new ComboBox<>(borderOptions);
+        ComboBox<String> BorderStyleBox = new ComboBox<>(borderOptions);
+        BorderStyleBox.setValue("rectangle");
     
         // BorderColor
         Label borderColorLabel = new Label("Border Color");
@@ -263,7 +275,8 @@ public class NodePane extends Pane{
             "yellow",
             "blue"
         );
-        ComboBox<String> BorderColor = new ComboBox<>(borderColorOptions);
+        ComboBox<String> BorderColorBox = new ComboBox<>(borderColorOptions);
+        BorderColorBox.setValue("black");
 
         // Media
         Label imageLabel = new Label("Image");
@@ -279,39 +292,50 @@ public class NodePane extends Pane{
             @Override
             public void handle(ActionEvent t) {
                 EditableLabel nameColorOut = (EditableLabel) pane.getChildren().get(1);
-                nameColorOut.setTextFill(Color.web(nameColor.getValue()));
+                nameColorOut.setTextFill(Color.web(nameColorBox.getValue()));
                 Rectangle backgroundColorOut = (Rectangle) pane.getChildren().get(0);
-                backgroundColorOut.setFill(Color.web(BackgroundColor.getValue()));
+                backgroundColorOut.setFill(Color.web(BackgroundColorBox.getValue()));
                 // Border Style goes here
-                backgroundColorOut.setStroke(Color.web(BorderColor.getValue()));
+                backgroundColorOut.setStroke(Color.web(BorderColorBox.getValue()));
                 // Handle isCenter
+
+                // also need to change the Pane attributes and the CustomNode values too for perfect saving
+                pane.nameColor = nameColorBox.getValue();
+                pane.backgroundColor = BackgroundColorBox.getValue();
+                pane.borderColor = BorderColorBox.getValue();
+
+                pane.syncAttr();
             }
         });
 
-        // imageButton.setOnAction(new EventHandler<ActionEvent>() {
-        //     @Override
-        //     public void handle(ActionEvent t) {
-        //         FileChooser fileChooser;
-        //         File selectedFile = fileChooser.showOpenDialog(stage);
-        //         if (selectedFile != null) {
-        //             this.setMedia(selectedFile.getName());
-        //             this.node.setMedia(selectedFile.getName());
-        //             // Somehow refresh the UI or cause it to be refreshed by saving later
-        //         System.out.println("Loaded: " + selectedFile.getName());
-        //         } else {
-        //             System.out.println("No file selected");
-        //         }
-        //     }
-        // });
+        imageButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent t) {
+                FileChooser fileChooser = new FileChooser();
+                File selectedFile = fileChooser.showOpenDialog(stage);
+                if (selectedFile != null) {
+                    System.out.println(selectedFile.getName());
+                    pane.setMedia(selectedFile.getName());
+                    pane.node.setMedia(selectedFile.getName());
+                    // Somehow refresh the UI or cause it to be refreshed by saving later
+                    Image image = new Image("file:" + pane.getMedia());
+                    ImageView imageview = (ImageView) pane.getChildren().get(3);
+                    imageview.setImage(image);
+                    System.out.println("Loaded: " + selectedFile.getName());
+                } else {
+                    System.out.println("No file selected");
+                }
+            }
+        });
 
         grid.add(nameColorLabel, 0, 0);
-        grid.add(nameColor, 1, 0);
+        grid.add(nameColorBox, 1, 0);
         grid.add(backgroundColorLabel, 0, 1);
-        grid.add(BackgroundColor, 1, 1);
+        grid.add(BackgroundColorBox, 1, 1);
         grid.add(borderLabel, 0, 2);
-        grid.add(BorderStyle, 1, 2);
+        grid.add(BorderStyleBox, 1, 2);
         grid.add(borderColorLabel, 0, 3);
-        grid.add(BorderColor, 1, 3);
+        grid.add(BorderColorBox, 1, 3);
         grid.add(imageLabel, 0, 4);
         grid.add(imageButton, 1, 4);
         grid.add(isCenter, 0, 5);
