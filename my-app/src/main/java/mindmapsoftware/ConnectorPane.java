@@ -169,7 +169,8 @@ public class ConnectorPane extends Pane {
             "yellow",
             "blue"
         );
-        ComboBox<String> labelColor = new ComboBox<>(labelColorOptions);
+        ComboBox<String> labelColorBox = new ComboBox<>(labelColorOptions);
+        labelColorBox.setValue("black");
 
         // Color
         Label lineColorLabel = new Label("Line Color");
@@ -180,7 +181,8 @@ public class ConnectorPane extends Pane {
             "yellow",
             "blue"
         );
-        ComboBox<String> lineColor = new ComboBox<>(lineColorOptions);
+        ComboBox<String> lineColorBox = new ComboBox<>(lineColorOptions);
+        lineColorBox.setValue("black");
 
         // Type
         Label typeLabel = new Label("Type");
@@ -190,7 +192,8 @@ public class ConnectorPane extends Pane {
             "directed no dash",
             "directed dash"
         );
-        ComboBox<String> type = new ComboBox<>(typeOptions);
+        ComboBox<String> typeBox = new ComboBox<>(typeOptions);
+        labelColorBox.setValue("undirected no dash");
 
         Button saveButton = new Button("Save");
 
@@ -199,21 +202,25 @@ public class ConnectorPane extends Pane {
             @Override
             public void handle(ActionEvent t) {
                 EditableLabel label = (EditableLabel) pane.getChildren().get(1);
-                label.setTextFill(Color.web(labelColor.getValue()));
+                label.setTextFill(Color.web(labelColorBox.getValue()));
                 Line line = (Line) pane.getChildren().get(0);
-                line.setStroke(Color.web(lineColor.getValue()));
+                line.setStroke(Color.web(lineColorBox.getValue()));
                 // Handle dashed lines
 
                 // need to set Pane attributes and Connector attributes for proper saving
+                pane.labelColor = labelColorBox.getValue();
+                pane.color = lineColorBox.getValue();
+
+                pane.syncAttr();
             }
         });
 
         grid.add(labelColorLabel, 0, 0);
-        grid.add(labelColor, 1, 0);
+        grid.add(labelColorBox, 1, 0);
         grid.add(lineColorLabel, 0, 1);
-        grid.add(lineColor, 1, 1);
+        grid.add(lineColorBox, 1, 1);
         grid.add(typeLabel, 0, 2);
-        grid.add(type, 1, 2);
+        grid.add(typeBox, 1, 2);
         grid.add(saveButton, 0, 3);
 
         Scene scene = new Scene (grid, 300, 100);
