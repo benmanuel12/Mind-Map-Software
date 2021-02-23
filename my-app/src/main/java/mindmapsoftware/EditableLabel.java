@@ -4,6 +4,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 
+// Source: https://stackoverflow.com/questions/25572398/how-do-i-create-an-editable-label-in-javafx-2-2 Answer by user Autumn_Wind
+
 class EditableLabel extends Label {
     TextField tf = new TextField();
     /***

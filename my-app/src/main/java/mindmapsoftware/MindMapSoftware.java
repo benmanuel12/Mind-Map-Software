@@ -11,10 +11,13 @@ import java.util.ArrayList;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.input.MouseEvent;
@@ -28,37 +31,84 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-
-public class MindMapSoftware extends Application{
+public class MindMapSoftware extends Application {
 
     private static Board active;
     private static boolean enabled = false;
     private static NodePane selected1;
     private static NodePane selected2;
 
-    // This returns rather baffling results as nodes that contain other nodes are returned in their entirity including the recursive nodes within them
-    // I hope for the code that displays the results to abstract over this and just display relevant data for each node and connector
-    public static ArrayList<CustomNode> search(String input, ArrayList<CustomNode> targetList){
-        ArrayList<CustomNode> results = new ArrayList<>();
+    // This returns rather baffling results as nodes that contain other nodes are
+    // returned in their entirity including the recursive nodes within them
+    // I hope for the code that displays the results to abstract over this and just
+    // display relevant data for each node and connector
+    public static void search(String input, ArrayList<CustomNode> NodeList, ArrayList<Connector> ConnectorList, Pane mapSpace, VBox nodeHolder, VBox connectorHolder){
+        ArrayList<CustomNode> NodeResults = new ArrayList<>();
+        ArrayList<Connector> ConnectorResults = new ArrayList<>();
+        System.out.println("Created Arrays");
 
-        for (Element element : targetList){
-            if (element instanceof CustomNode){
-                CustomNode node = (CustomNode) element;
-                if ((node.getName().toLowerCase().contains(input.toLowerCase())) || (node.getText().toLowerCase().contains(input.toLowerCase()))){
-                    results.add(node);
-                }
-                if (node.getNodeContent().size() != 0){
-                    // The node contains more nodes and connectors
-                    results.addAll(search(input, node.getNodeContent()));
-                }
-            } else if (element instanceof Connector){
-                Connector connector = (Connector) element;
-                if (connector.getLabel().toLowerCase().contains(input.toLowerCase())){
-                    //results.add(connector);
-                }
+        nodeHolder.getChildren().clear();
+        connectorHolder.getChildren().clear();
+        System.out.println("Cleared holders");
+
+
+        for (CustomNode node : NodeList){
+            if ((node.getName().toLowerCase().contains(input.toLowerCase())) || (node.getText().toLowerCase().contains(input.toLowerCase()))){
+                NodeResults.add(node);
+            }
+            if (node.getNodeContent().size() != 0){
+                // The node contains more nodes and connectors
+                search(input, node.getNodeContent(), node.getConnectorContent(), mapSpace, nodeHolder, connectorholder);
+            }
+        }
+        for (Connector connector : ConnectorList){
+            if (connector.getLabel().toLowerCase().contains(input.toLowerCase())){
+                ConnectorResults.add(connector);
             } 
-        }   
-        return results;
+        }
+        System.out.println("Completed Search");
+        System.out.println(NodeResults);
+        System.out.println(ConnectorResults);
+        
+        /*
+        Legend for people who aren't me
+        customnode is an instance of the CustomNode class
+        tempButton is an instance of the Button class
+        node is an instance of the JavaFX class Node and will either be a NodePane or a ConnectorPane
+        nodePane is simply a Node confirmed to be a NodePane and forcibly downcast to fit
+        */
+        for (CustomNode customnode : NodeResults){
+            Button tempButton = new Button(customnode.getName());
+            NodePane target;
+            for (Node node : mapSpace.getChildren()) {
+                if (node instanceof NodePane){
+                    NodePane nodepane = (NodePane) node;
+                    if (nodepane.getNode() == customnode) {
+                        target = nodepane;
+                    }
+                }
+            }
+            //tempButton.setOnAction(value); Moves scrollpane viewpoint to the node in question
+            nodeHolder.getChildren().add(tempButton);
+        }
+        System.out.println("Created Buttons for Nodes");
+
+        for (Connector customconnector : ConnectorResults){
+            Button tempButton = new Button(customconnector.getLabel());
+            ConnectorPane target;
+            for (Node node : mapSpace.getChildren()) {
+                if (node instanceof ConnectorPane){
+                    ConnectorPane connectorpane = (ConnectorPane) node;
+                    if (connectorpane.getConnector() == customconnector) {
+                        target = connectorpane;
+                    }
+                }
+            }
+            //tempButton.setOnAction(value); Moves scrollpane viewpoint to the node in question
+            connectorHolder.getChildren().add(tempButton);
+        }
+        System.out.println("Created Buttons for Connectors");
+        
     }
 
     private static void save() {
@@ -193,6 +243,8 @@ public class MindMapSoftware extends Application{
         scroll.vbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.ALWAYS);
         scroll.setPrefViewportWidth(800);
         scroll.setPrefViewportHeight(600);
+
+        
         
 
         // Supposedly makes the lag on dragging boxes reduce. Has negligible effect
@@ -321,13 +373,25 @@ public class MindMapSoftware extends Application{
             }
         });
 
+        VBox nodeResultsholder = new VBox();
+        VBox connectorResultsholder = new VBox();
+
+        TabPane searchResultholder = new TabPane();
+        Tab nodeTab = new Tab("Nodes", nodeResultsholder);
+        Tab connectorTab = new Tab("Connectors", connectorResultsholder);
+
+        searchResultholder.getTabs().addAll(nodeTab, connectorTab);
+
         searchSubmitButton.setOnAction(e -> {
             if (active == null){
                 System.out.println("No board is active");
             } else {
-                System.out.println(search(searchInput.getText(), active.getNodeContent()));
+                search(searchInput.getText(), active.getNodeContent(), active.getConnectorContent(), mapSpace, nodeResultsholder, connectorResultsholder);
             }
         });
+
+        BorderSlideBar sidebar = new BorderSlideBar(300, searchSubmitButton, Pos.BASELINE_RIGHT, searchResultholder);
+
 
         // Toolbar arrangements
         hbox.getChildren().addAll(newBoardButton, newCustomNodeButton, saveButton, loadButton, quickAddToggleButton, upLayerButton, downLayerButton, searchInput, searchSubmitButton);
@@ -348,8 +412,8 @@ public class MindMapSoftware extends Application{
 
         root.setTop(toolbar);
         root.setCenter(scroll);
+        root.setRight(sidebar);
         root.setBottom(footer);
-
         Scene scene = new Scene(root, 800, 500);
         //scene.getStylesheets().add("stylesheet.css");
 
