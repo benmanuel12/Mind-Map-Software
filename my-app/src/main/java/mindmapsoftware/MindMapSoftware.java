@@ -20,6 +20,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -58,7 +59,7 @@ public class MindMapSoftware extends Application {
             }
             if (node.getNodeContent().size() != 0){
                 // The node contains more nodes and connectors
-                search(input, node.getNodeContent(), node.getConnectorContent(), mapSpace, nodeHolder, connectorholder);
+                search(input, node.getNodeContent(), node.getConnectorContent(), mapSpace, nodeHolder, connectorHolder);
             }
         }
         for (Connector connector : ConnectorList){
@@ -237,6 +238,8 @@ public class MindMapSoftware extends Application {
         TitledPane toolbar = new TitledPane();
         HBox hbox = new HBox();
         Pane mapSpace = new Pane();
+
+
         mapSpace.setPrefSize(19200, 10800);
         ScrollPane scroll = new ScrollPane(mapSpace);
         scroll.hbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.ALWAYS);
@@ -284,8 +287,23 @@ public class MindMapSoftware extends Application {
                         selected2 = null;
                     }
                 }
-            }
-                       
+            } else if (event.isShiftDown()){
+                System.out.println("Shift is down");
+                if (event.getButton() == MouseButton.PRIMARY){
+                    System.out.println("Left click used");
+                    if (event.getTarget() instanceof Rectangle) {
+                        System.out.println("Click in right place");
+                        Rectangle rect = (Rectangle) event.getTarget();
+                        NodePane pane = (NodePane) rect.getParent();
+                        CustomNode nodeToDelete = pane.getNode();
+                        active.getNodeContent().remove(nodeToDelete);
+
+                        NodePane parentNodePane = (NodePane) rect.getParent();
+                        Pane parentPane = (Pane) parentNodePane.getParent();
+                        parentPane.getChildren().removeAll(parentPane);
+                    }
+                }
+            }             
         });
 
         HBox footer = new HBox();
@@ -382,13 +400,13 @@ public class MindMapSoftware extends Application {
 
         searchResultholder.getTabs().addAll(nodeTab, connectorTab);
 
-        searchSubmitButton.setOnAction(e -> {
-            if (active == null){
-                System.out.println("No board is active");
-            } else {
-                search(searchInput.getText(), active.getNodeContent(), active.getConnectorContent(), mapSpace, nodeResultsholder, connectorResultsholder);
-            }
-        });
+        // searchSubmitButton.setOnAction(e -> {
+        //     if (active == null){
+        //         System.out.println("No board is active");
+        //     } else {
+        //         search(searchInput.getText(), active.getNodeContent(), active.getConnectorContent(), mapSpace, nodeResultsholder, connectorResultsholder);
+        //     }
+        // });
 
         BorderSlideBar sidebar = new BorderSlideBar(300, searchSubmitButton, Pos.BASELINE_RIGHT, searchResultholder);
 

@@ -40,7 +40,7 @@ public class BorderSlideBar extends VBox {
 
         getStyleClass().add("sidebar");       
         setExpandedSize(expandedSize);
-        setVisible(false);
+        setVisible(true);
 
         // Set location
         if (location == null) {
@@ -52,6 +52,7 @@ public class BorderSlideBar extends VBox {
 
         // Add nodes in the vbox
         getChildren().addAll(nodes);
+    
 
         controlButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override

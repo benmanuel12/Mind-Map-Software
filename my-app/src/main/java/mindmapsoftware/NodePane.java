@@ -205,22 +205,13 @@ public class NodePane extends Pane{
 
             event.consume();
         });
+        
 
         this.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY) {
                 showNodeStyleStage(this);
             }
         });
-
-        rect.setOnMouseClicked(event -> {
-            if ((event.getClickCount() == 2) && (event.getButton() == MouseButton.SECONDARY)){
-                Pane parentPane = (Pane) this.getParent();
-                parentPane.getChildren().removeAll(this);
-                // Delete corresponding Custom Node
-                // Delete all connectorPanes linked to this node
-                // Delete corresponding Connectors
-                }
-            });
 
         this.getChildren().addAll(rect, titleLabel, textLabel, imageview);
 
