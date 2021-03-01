@@ -27,6 +27,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
@@ -297,10 +298,22 @@ public class MindMapSoftware extends Application {
                         NodePane pane = (NodePane) rect.getParent();
                         CustomNode nodeToDelete = pane.getNode();
                         active.getNodeContent().remove(nodeToDelete);
+                        System.out.println(active.getNodeContent());
+                        
+                        Pane parentPane = (Pane) pane.getParent();
+                        parentPane.getChildren().remove(pane);
+                        System.out.println(parentPane.getChildren());
 
-                        NodePane parentNodePane = (NodePane) rect.getParent();
-                        Pane parentPane = (Pane) parentNodePane.getParent();
-                        parentPane.getChildren().removeAll(parentPane);
+                    } else if (event.getTarget() instanceof Line) {
+                        System.out.println("Click in right place");
+                        Line line = (Line) event.getTarget();
+                        ConnectorPane pane = (ConnectorPane) line.getParent();
+                        Connector connectorToDelete = pane.getConnector();
+                        active.getConnectorContent().remove(connectorToDelete);
+
+                        Pane parentPane = (Pane) pane.getParent();
+                        parentPane.getChildren().remove(pane);
+
                     }
                 }
             }             
