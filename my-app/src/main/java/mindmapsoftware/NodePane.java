@@ -206,6 +206,27 @@ public class NodePane extends Pane{
 
             event.consume();
         });
+
+        this.setOnMouseDragReleased(event -> {
+            Pane pane = (Pane) this.getParent();
+
+            for (Node paneNode: pane.getChildren()) {
+                if (paneNode instanceof ConnectorPane){
+                    ConnectorPane connectorPane = (ConnectorPane) paneNode;
+                    if (connectorPane.getConnector().getNode1() == this.getNode()){
+                        connectorPane.getLine().setStartX(this.xCoord);
+                        connectorPane.getLine().setStartY(this.yCoord);
+                    } else if (connectorPane.getConnector().getNode2() == this.getNode()){
+                        connectorPane.getLine().setEndX(this.xCoord);
+                        connectorPane.getLine().setEndY(this.yCoord);
+                    } else {
+                        System.out.println("No change needed");
+                    }
+                }
+            }
+
+            event.consume();
+        });
         
 
         this.setOnMouseClicked(event -> {
