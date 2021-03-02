@@ -191,17 +191,6 @@ public class ConnectorPane extends Pane {
         ComboBox<String> lineColorBox = new ComboBox<>(lineColorOptions);
         lineColorBox.setValue("black");
 
-        // Type
-        Label typeLabel = new Label("Type");
-        ObservableList<String> typeOptions = FXCollections.observableArrayList(
-            "undirected no dash",
-            "undirected dash",
-            "directed no dash",
-            "directed dash"
-        );
-        ComboBox<String> typeBox = new ComboBox<>(typeOptions);
-        labelColorBox.setValue("undirected no dash");
-
         Button saveButton = new Button("Save");
 
         // label color, line color, type
@@ -212,7 +201,6 @@ public class ConnectorPane extends Pane {
                 label.setTextFill(Color.web(labelColorBox.getValue()));
                 Line line = (Line) pane.getChildren().get(0);
                 line.setStroke(Color.web(lineColorBox.getValue()));
-                // Handle dashed lines
 
                 // need to set Pane attributes and Connector attributes for proper saving
                 pane.labelColor = labelColorBox.getValue();
@@ -226,9 +214,7 @@ public class ConnectorPane extends Pane {
         grid.add(labelColorBox, 1, 0);
         grid.add(lineColorLabel, 0, 1);
         grid.add(lineColorBox, 1, 1);
-        grid.add(typeLabel, 0, 2);
-        grid.add(typeBox, 1, 2);
-        grid.add(saveButton, 0, 3);
+        grid.add(saveButton, 0, 2);
 
         Scene scene = new Scene (grid, 300, 100);
         stage.setScene(scene);

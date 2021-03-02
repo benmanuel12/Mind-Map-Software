@@ -15,6 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -214,9 +215,6 @@ public class NodePane extends Pane{
         });
 
         this.getChildren().addAll(rect, titleLabel, textLabel, imageview);
-
-
-
     }
 
     public static void showNodeStyleStage(NodePane pane){
@@ -293,7 +291,10 @@ public class NodePane extends Pane{
                 // Border Style goes here
                 backgroundColorOut.setStroke(Color.web(BorderColorBox.getValue()));
                 // Handle isCenter
-
+                if (isCenter.isSelected()){
+                    pane.setCenter(true);
+                    pane.getNode().setCenter(true);
+                };
                 // also need to change the Pane attributes and the CustomNode values too for perfect saving
                 pane.nameColor = nameColorBox.getValue();
                 pane.backgroundColor = BackgroundColorBox.getValue();

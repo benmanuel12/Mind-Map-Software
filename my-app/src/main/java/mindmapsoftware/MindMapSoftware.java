@@ -9,6 +9,9 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import javafx.application.Application;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -39,74 +42,87 @@ public class MindMapSoftware extends Application {
     private static boolean enabled = false;
     private static NodePane selected1;
     private static NodePane selected2;
+    private static ArrayList<NodePane> NodeResults = new ArrayList<>();
+    private static ArrayList<ConnectorPane> ConnectorResults = new ArrayList<>();
 
     // This returns rather baffling results as nodes that contain other nodes are
     // returned in their entirity including the recursive nodes within them
     // I hope for the code that displays the results to abstract over this and just
     // display relevant data for each node and connector
-    public static void search(String input, ArrayList<CustomNode> NodeList, ArrayList<Connector> ConnectorList, Pane mapSpace, VBox nodeHolder, VBox connectorHolder){
-        ArrayList<CustomNode> NodeResults = new ArrayList<>();
-        ArrayList<Connector> ConnectorResults = new ArrayList<>();
-        System.out.println("Created Arrays");
-
+    public static void search(String input, Pane mapSpace, ScrollPane scroll, VBox nodeHolder, VBox connectorHolder){
+       
         nodeHolder.getChildren().clear();
         connectorHolder.getChildren().clear();
         System.out.println("Cleared holders");
 
+        ObservableList<Node> nodeList = mapSpace.getChildren();
 
-        for (CustomNode node : NodeList){
-            if ((node.getName().toLowerCase().contains(input.toLowerCase())) || (node.getText().toLowerCase().contains(input.toLowerCase()))){
-                NodeResults.add(node);
-            }
-            if (node.getNodeContent().size() != 0){
-                // The node contains more nodes and connectors
-                search(input, node.getNodeContent(), node.getConnectorContent(), mapSpace, nodeHolder, connectorHolder);
+        for (Node x : nodeList){
+            if (x instanceof NodePane){
+                NodePane nodePane = (NodePane) x;
+                CustomNode node = nodePane.getNode();
+
+                if ((node.getName().toLowerCase().contains(input.toLowerCase())) || (node.getText().toLowerCase().contains(input.toLowerCase()))){
+                    NodeResults.add(nodePane);
+                }
+                if (node.getNodeContent().size() != 0){
+                    // The node contains more nodes and connectors
+                    search(input, mapSpace, scroll, nodeHolder, connectorHolder);
+                }
+            } else if (x instanceof ConnectorPane) {
+                ConnectorPane connectorPane = (ConnectorPane) x;
+                Connector connector = connectorPane.getConnector();
+
+                if (connector.getLabel().toLowerCase().contains(input.toLowerCase())){
+                    ConnectorResults.add(connectorPane);
+                } 
             }
         }
-        for (Connector connector : ConnectorList){
-            if (connector.getLabel().toLowerCase().contains(input.toLowerCase())){
-                ConnectorResults.add(connector);
-            } 
-        }
+
         System.out.println("Completed Search");
         System.out.println(NodeResults);
         System.out.println(ConnectorResults);
         
-        /*
-        Legend for people who aren't me
-        customnode is an instance of the CustomNode class
-        tempButton is an instance of the Button class
-        node is an instance of the JavaFX class Node and will either be a NodePane or a ConnectorPane
-        nodePane is simply a Node confirmed to be a NodePane and forcibly downcast to fit
-        */
-        for (CustomNode customnode : NodeResults){
-            Button tempButton = new Button(customnode.getName());
-            NodePane target;
+        for (NodePane nodePane : NodeResults){
+            Button tempButton = new Button(nodePane.getNode().getName());
             for (Node node : mapSpace.getChildren()) {
                 if (node instanceof NodePane){
-                    NodePane nodepane = (NodePane) node;
-                    if (nodepane.getNode() == customnode) {
-                        target = nodepane;
+                    NodePane possiblenodepane = (NodePane) node;
+                    if (possiblenodepane.getNode() == nodePane.getNode()) {
+                        tempButton.setOnAction(new EventHandler<ActionEvent>(){
+                            @Override
+                            public void handle(ActionEvent t) {
+                                double xCoord = nodePane.getNode().getXCoord();
+                                double yCoord = nodePane.getNode().getYCoord();
+                                scroll.setHvalue(xCoord);
+                                scroll.setVvalue(yCoord);
+                            }
+                        });
                     }
                 }
             }
-            //tempButton.setOnAction(value); Moves scrollpane viewpoint to the node in question
             nodeHolder.getChildren().add(tempButton);
         }
         System.out.println("Created Buttons for Nodes");
 
-        for (Connector customconnector : ConnectorResults){
-            Button tempButton = new Button(customconnector.getLabel());
-            ConnectorPane target;
+        for (ConnectorPane connectorPane : ConnectorResults){
+            Button tempButton = new Button(connectorPane.getConnector().getLabel());
             for (Node node : mapSpace.getChildren()) {
                 if (node instanceof ConnectorPane){
-                    ConnectorPane connectorpane = (ConnectorPane) node;
-                    if (connectorpane.getConnector() == customconnector) {
-                        target = connectorpane;
+                    ConnectorPane possibleconnectorpane = (ConnectorPane) node;
+                    if (possibleconnectorpane.getConnector() == connectorPane.getConnector()) {
+                        tempButton.setOnAction(new EventHandler<ActionEvent>(){
+                            @Override
+                            public void handle(ActionEvent t) {
+                                double xCoord = connectorPane.getLine().getStartX();
+                                double yCoord = connectorPane.getLine().getStartY();
+                                scroll.setHvalue(xCoord);
+                                scroll.setVvalue(yCoord);
+                            }
+                        });
                     }
                 }
             }
-            //tempButton.setOnAction(value); Moves scrollpane viewpoint to the node in question
             connectorHolder.getChildren().add(tempButton);
         }
         System.out.println("Created Buttons for Connectors");
@@ -128,7 +144,7 @@ public class MindMapSoftware extends Application {
         }
     }
 
-    public static void load(String filename, Pane mapSpace, Label footerLabel) {
+    public static void load(String filename, Pane mapSpace, ScrollPane scroll, Label footerLabel) {
         Board loadedBoard;
         try {
             FileInputStream fileIn = new FileInputStream(filename);
@@ -137,7 +153,7 @@ public class MindMapSoftware extends Application {
             active = loadedBoard;
             footerLabel.setText(active.getName());
             mapSpace.getChildren().clear();
-            refreshScreen(active.getNodeContent(), active.getConnectorContent(), mapSpace);
+            refreshScreen(active.getNodeContent(), active.getConnectorContent(), mapSpace, scroll);
             in.close();
             fileIn.close();
         } catch (IOException i) {
@@ -150,7 +166,7 @@ public class MindMapSoftware extends Application {
         }
     }
 
-    public static void refreshScreen(ArrayList<CustomNode> nodeList, ArrayList<Connector> connectorList, Pane mapSpace) {
+    public static void refreshScreen(ArrayList<CustomNode> nodeList, ArrayList<Connector> connectorList, Pane mapSpace, ScrollPane scrollPane) {
         if (mapSpace.getChildren().size() != 0) {
             for (CustomNode node: nodeList){
                 if (node.getIsRendered() == false) {
@@ -161,6 +177,21 @@ public class MindMapSoftware extends Application {
                     newPane.setYCoord(newPane.getTranslateY());
                     newPane.setIsRendered(true);
                     node.setisRendered(true);
+                    if (node.isCenter()){
+                        Rectangle rect = (Rectangle) newPane.getChildren().get(0);
+                        double newX = (newPane.getXCoord() - rect.getWidth()/2 + 960)/1920;
+                        double newY = (newPane.getYCoord() - rect.getHeight()/2 + 540)/1080;
+    
+                        if (newX < 0.0){
+                            newX = 0.0;
+                        }
+                        if (newY < 0.0){
+                            newY = 0.0;
+                        }
+    
+                        scrollPane.setHvalue(newX);
+                        scrollPane.setVvalue(newY);
+                    }
                 } else {
                     System.out.println("Node is already on screen");
                 }
@@ -186,6 +217,21 @@ public class MindMapSoftware extends Application {
                 newPane.setYCoord(newPane.getTranslateY());
                 newPane.setIsRendered(true);
                 node.setisRendered(true);
+                if (node.isCenter()){
+                    Rectangle rect = (Rectangle) newPane.getChildren().get(0);
+                    double newX = (newPane.getXCoord() - rect.getWidth()/2 + 960)/1920;
+                    double newY = (newPane.getYCoord() - rect.getHeight()/2 + 540)/1080;
+
+                    if (newX < 0.0){
+                        newX = 0.0;
+                    }
+                    if (newY < 0.0){
+                        newY = 0.0;
+                    }
+
+                    scrollPane.setHvalue(newX);
+                    scrollPane.setVvalue(newY);
+                }
             }
             for (Connector connector: connectorList){
                 ConnectorPane newPane = new ConnectorPane(connector);
@@ -248,6 +294,8 @@ public class MindMapSoftware extends Application {
         scroll.setPrefViewportWidth(800);
         scroll.setPrefViewportHeight(600);
 
+        //WebView fontWebView = new WebView();
+
         
         
 
@@ -280,7 +328,7 @@ public class MindMapSoftware extends Application {
                         System.out.println("Added to board");
 
                         // Render node to screen
-                        refreshScreen(active.getNodeContent(), active.getConnectorContent(), mapSpace);
+                        refreshScreen(active.getNodeContent(), active.getConnectorContent(), mapSpace, scroll);
                         System.out.println("Refreshed screen");
 
                         // Reset selection variables
@@ -348,7 +396,7 @@ public class MindMapSoftware extends Application {
                 currentContent.add(tempNode);
                 active.setNodeContent(currentContent);
                 // Render node to screen
-                refreshScreen(active.getNodeContent(), active.getConnectorContent(), mapSpace);
+                refreshScreen(active.getNodeContent(), active.getConnectorContent(), mapSpace, scroll);
             }
         });
 
@@ -364,7 +412,7 @@ public class MindMapSoftware extends Application {
         loadButton.setOnAction(e -> {
             File selectedFile = fileChooser.showOpenDialog(primaryStage);
             if (selectedFile != null) {
-                load(selectedFile.getName(), mapSpace, footerLabel);
+                load(selectedFile.getName(), mapSpace, scroll, footerLabel);
             System.out.println("Loaded: " + selectedFile.getName());
             } else {
                 System.out.println("No file selected");
