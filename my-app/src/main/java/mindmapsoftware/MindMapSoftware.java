@@ -94,8 +94,8 @@ public class MindMapSoftware extends Application {
                             @Override
                             public void handle(ActionEvent t) {
                                 Rectangle rect = (Rectangle) nodePane.getChildren().get(0);
-                                double newX = (nodePane.getXCoord() - rect.getWidth()/2 + 960)/1920;
-                                double newY = (nodePane.getYCoord() - rect.getHeight()/2 + 540)/1080;
+                                double newX = (nodePane.getXCoord() - rect.getWidth()/2 + 960)/19200;
+                                double newY = (nodePane.getYCoord() - rect.getHeight()/2 + 540)/10800;
     
                                 if (newX < 0.0){
                                     newX = 0.0;
@@ -124,10 +124,22 @@ public class MindMapSoftware extends Application {
                         tempButton.setOnAction(new EventHandler<ActionEvent>(){
                             @Override
                             public void handle(ActionEvent t) {
-                                double xCoord = connectorPane.getLine().getStartX();
-                                double yCoord = connectorPane.getLine().getStartY();
-                                scroll.setHvalue(xCoord);
-                                scroll.setVvalue(yCoord);
+                                Line line = (Line) connectorPane.getChildren().get(0);
+
+                                // new X  is equal to (whichever X coord of start X and End X is smaller + (abs(startX - endX))2 + 960)/1920
+                                // new Y  is equal to (whichever Y coord of start Y and End Y is smaller + (abs(startY - endY))2 + 540)/1080
+                                double newX = (Math.min(line.getStartX(), line.getEndX()) - (Math.abs(line.getStartX() - line.getEndX()))/2 + 960)/19200;
+                                double newY = (Math.min(line.getStartY(), line.getEndY()) - (Math.abs(line.getStartY() - line.getEndY()))/2 + 540)/10800;
+
+                                if (newX < 0.0){
+                                    newX = 0.0;
+                                }           
+                                if (newY < 0.0){
+                                    newY = 0.0;
+                                }
+    
+                                scroll.setHvalue(newX);
+                                scroll.setVvalue(newY);
                             }
                         });
                     }
@@ -190,8 +202,8 @@ public class MindMapSoftware extends Application {
                     node.setisRendered(true);
                     if (node.isCenter()){
                         Rectangle rect = (Rectangle) newPane.getChildren().get(0);
-                        double newX = (newPane.getXCoord() - rect.getWidth()/2 + 960)/1920;
-                        double newY = (newPane.getYCoord() - rect.getHeight()/2 + 540)/1080;
+                        double newX = (newPane.getXCoord() - rect.getWidth()/2 + 960)/19200;
+                        double newY = (newPane.getYCoord() - rect.getHeight()/2 + 540)/10800;
     
                         if (newX < 0.0){
                             newX = 0.0;
