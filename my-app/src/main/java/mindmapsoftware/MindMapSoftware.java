@@ -36,6 +36,7 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+
 public class MindMapSoftware extends Application {
 
     private static Board active;
@@ -92,10 +93,19 @@ public class MindMapSoftware extends Application {
                         tempButton.setOnAction(new EventHandler<ActionEvent>(){
                             @Override
                             public void handle(ActionEvent t) {
-                                double xCoord = nodePane.getNode().getXCoord();
-                                double yCoord = nodePane.getNode().getYCoord();
-                                scroll.setHvalue(xCoord);
-                                scroll.setVvalue(yCoord);
+                                Rectangle rect = (Rectangle) nodePane.getChildren().get(0);
+                                double newX = (nodePane.getXCoord() - rect.getWidth()/2 + 960)/1920;
+                                double newY = (nodePane.getYCoord() - rect.getHeight()/2 + 540)/1080;
+    
+                                if (newX < 0.0){
+                                    newX = 0.0;
+                                }           
+                                if (newY < 0.0){
+                                    newY = 0.0;
+                                }
+    
+                                scroll.setHvalue(newX);
+                                scroll.setVvalue(newY);
                             }
                         });
                     }
@@ -165,6 +175,7 @@ public class MindMapSoftware extends Application {
             return;
         }
     }
+
 
     public static void refreshScreen(ArrayList<CustomNode> nodeList, ArrayList<Connector> connectorList, Pane mapSpace, ScrollPane scrollPane) {
         if (mapSpace.getChildren().size() != 0) {
@@ -286,19 +297,13 @@ public class MindMapSoftware extends Application {
         HBox hbox = new HBox();
         Pane mapSpace = new Pane();
 
-
         mapSpace.setPrefSize(19200, 10800);
         ScrollPane scroll = new ScrollPane(mapSpace);
         scroll.hbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.ALWAYS);
         scroll.vbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.ALWAYS);
         scroll.setPrefViewportWidth(800);
-        scroll.setPrefViewportHeight(600);
-
-        //WebView fontWebView = new WebView();
-
+        scroll.setPrefViewportHeight(600); 
         
-        
-
         // Supposedly makes the lag on dragging boxes reduce. Has negligible effect
         mapSpace.setCache(true);
 
@@ -461,15 +466,15 @@ public class MindMapSoftware extends Application {
 
         searchResultholder.getTabs().addAll(nodeTab, connectorTab);
 
-        // searchSubmitButton.setOnAction(e -> {
-        //     if (active == null){
-        //         System.out.println("No board is active");
-        //     } else {
-        //         search(searchInput.getText(), active.getNodeContent(), active.getConnectorContent(), mapSpace, nodeResultsholder, connectorResultsholder);
-        //     }
-        // });
+        searchSubmitButton.setOnAction(e -> {
+            if (active == null){
+                System.out.println("No board is active");
+            } else {
+                search(searchInput.getText(), mapSpace, scroll, nodeResultsholder, connectorResultsholder);
+            }
+        });
 
-        BorderSlideBar sidebar = new BorderSlideBar(300, searchSubmitButton, Pos.BASELINE_RIGHT, searchResultholder);
+        // BorderSlideBar sidebar = new BorderSlideBar(300, searchSubmitButton, Pos.BASELINE_RIGHT, searchResultholder);
 
 
         // Toolbar arrangements
@@ -491,7 +496,7 @@ public class MindMapSoftware extends Application {
 
         root.setTop(toolbar);
         root.setCenter(scroll);
-        root.setRight(sidebar);
+        root.setRight(searchResultholder);
         root.setBottom(footer);
         Scene scene = new Scene(root, 800, 500);
         //scene.getStylesheets().add("stylesheet.css");

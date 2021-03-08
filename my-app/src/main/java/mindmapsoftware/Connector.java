@@ -1,9 +1,8 @@
 package mindmapsoftware;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Connector extends Element implements Serializable {
+public class Connector extends Element {
 
     private String label;
 

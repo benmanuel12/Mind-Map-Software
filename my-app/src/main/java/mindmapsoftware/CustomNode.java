@@ -1,10 +1,9 @@
 package mindmapsoftware;
 
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
-public class CustomNode extends Element implements Serializable {
+public class CustomNode extends Element {
     private String name;
     private String nameColor;
     private String backgroundColor;
