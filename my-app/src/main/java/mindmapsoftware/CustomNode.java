@@ -5,10 +5,10 @@ import java.util.ArrayList;
 
 public class CustomNode extends Element {
     private String name;
-    private String nameColor;
-    private String backgroundColor;
+    private String nameColour;
+    private String backgroundColour;
     private String border;
-    private String borderColor;
+    private String borderColour;
     private boolean center;
     private ArrayList<CustomNode> nodeContent;
     private ArrayList<Connector> connectorContent;
@@ -26,20 +26,20 @@ public class CustomNode extends Element {
         this.name = name;
     }
 
-    public String getNameColor() {
-        return nameColor;
+    public String getNameColour() {
+        return nameColour;
     }
 
-    public void setNameColor(String nameColor) {
-        this.nameColor = nameColor;
+    public void setNameColour(String nameColour) {
+        this.nameColour = nameColour;
     }
 
-    public String getBackgroundColor() {
-        return backgroundColor;
+    public String getBackgroundColour() {
+        return backgroundColour;
     }
 
-    public void setBackgroundColor(String backgroundColor) {
-        this.backgroundColor = backgroundColor;
+    public void setBackgroundColour(String backgroundColour) {
+        this.backgroundColour = backgroundColour;
     }
 
     public String getBorder() {
@@ -50,12 +50,12 @@ public class CustomNode extends Element {
         this.border = border;
     }
 
-    public String getBorderColor() {
-        return borderColor;
+    public String getBorderColour() {
+        return borderColour;
     }
 
-    public void setBorderColor(String borderColor) {
-        this.borderColor = borderColor;
+    public void setBorderColour(String borderColour) {
+        this.borderColour = borderColour;
     }
 
     public boolean isCenter() {
@@ -123,12 +123,12 @@ public class CustomNode extends Element {
     }
 
 
-    public CustomNode(String name, String nameColor, String backgroundColor, String border, String borderColor, boolean center, ArrayList<CustomNode> nodeContent, ArrayList<Connector> connectorContent, String media, String text, boolean isRendered, double xCoord, double yCoord) {
+    public CustomNode(String name, String nameColour, String backgroundColour, String border, String borderColour, boolean center, ArrayList<CustomNode> nodeContent, ArrayList<Connector> connectorContent, String media, String text, boolean isRendered, double xCoord, double yCoord) {
         this.name = name;
-        this.nameColor = nameColor;
-        this.backgroundColor = backgroundColor;
+        this.nameColour = nameColour;
+        this.backgroundColour = backgroundColour;
         this.border = border;
-        this.borderColor = borderColor;
+        this.borderColour = borderColour;
         this.center = center;
         this.nodeContent = nodeContent;
         this.connectorContent = connectorContent;
@@ -141,10 +141,10 @@ public class CustomNode extends Element {
 
     public CustomNode(){
         this.name = "Add name";
-        this.nameColor = "black";
-        this.backgroundColor = "white";
+        this.nameColour = "black";
+        this.backgroundColour = "white";
         this.border = "solid";
-        this.borderColor = "black";
+        this.borderColour = "black";
         this.center = false;
         this.nodeContent = new ArrayList<CustomNode>();
         this.connectorContent = new ArrayList<Connector>();
@@ -158,10 +158,10 @@ public class CustomNode extends Element {
         ArrayList<Object> returnList = new ArrayList<>();
         returnList.add("Node");
         returnList.add(name);
-        returnList.add(nameColor);
-        returnList.add(backgroundColor);
+        returnList.add(nameColour);
+        returnList.add(backgroundColour);
         returnList.add(border);
-        returnList.add(borderColor);
+        returnList.add(borderColour);
         returnList.add(center);
         returnList.add(nodeContent);
         returnList.add(connectorContent);

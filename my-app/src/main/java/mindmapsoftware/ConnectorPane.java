@@ -24,8 +24,8 @@ public class ConnectorPane extends Pane {
     ObservableList<Double> dashArray;
 
     // Connector Attributes
-    private String labelColor;
-    private String color;
+    private String labelColour;
+    private String colour;
     private String type;
     private boolean isRendered;
     private CustomNode node1;
@@ -60,20 +60,20 @@ public class ConnectorPane extends Pane {
         this.dashArray = dashArray;
     }
 
-    public String getLabelColor() {
-        return this.labelColor;
+    public String getLabelColour() {
+        return this.labelColour;
     }
 
-    public void setLabelColor(String labelColor) {
-        this.labelColor = labelColor;
+    public void setLabelColour(String labelColour) {
+        this.labelColour = labelColour;
     }
 
-    public String getColor() {
-        return this.color;
+    public String getColour() {
+        return this.colour;
     }
 
-    public void setColor(String color) {
-        this.color = color;
+    public void setColour(String colour) {
+        this.colour = colour;
     }
 
     public String getType() {
@@ -124,8 +124,8 @@ public class ConnectorPane extends Pane {
         this.connector = connector;
 
         this.label = new EditableLabel(connector.getLabel());
-        this.labelColor = connector.getLabelColor();
-        this.color = connector.getColor();
+        this.labelColour = connector.getLabelColour();
+        this.colour = connector.getColour();
         this.type = connector.getType();
         this.isRendered = connector.getIsRendered();
         this.node1 = connector.getNode1();
@@ -167,53 +167,53 @@ public class ConnectorPane extends Pane {
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(10));
     
-        // Label Color
-        Label labelColorLabel = new Label("Label Color");
-        ObservableList<String> labelColorOptions = FXCollections.observableArrayList(
+        // Label Colour
+        Label labelColourLabel = new Label("Label Colour");
+        ObservableList<String> labelColourOptions = FXCollections.observableArrayList(
             "black",
             "red",
             "green",
             "yellow",
             "blue"
         );
-        ComboBox<String> labelColorBox = new ComboBox<>(labelColorOptions);
-        labelColorBox.setValue("black");
+        ComboBox<String> labelColourBox = new ComboBox<>(labelColourOptions);
+        labelColourBox.setValue("black");
 
-        // Color
-        Label lineColorLabel = new Label("Line Color");
-        ObservableList<String> lineColorOptions = FXCollections.observableArrayList(
+        // Colour
+        Label lineColourLabel = new Label("Line Colour");
+        ObservableList<String> lineColourOptions = FXCollections.observableArrayList(
             "black",
             "red",
             "green",
             "yellow",
             "blue"
         );
-        ComboBox<String> lineColorBox = new ComboBox<>(lineColorOptions);
-        lineColorBox.setValue("black");
+        ComboBox<String> lineColourBox = new ComboBox<>(lineColourOptions);
+        lineColourBox.setValue("black");
 
         Button saveButton = new Button("Save");
 
-        // label color, line color, type
+        // label colour, line colour, type
         saveButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
                 EditableLabel label = (EditableLabel) pane.getChildren().get(1);
-                label.setTextFill(Color.web(labelColorBox.getValue()));
+                label.setTextFill(Color.web(labelColourBox.getValue()));
                 Line line = (Line) pane.getChildren().get(0);
-                line.setStroke(Color.web(lineColorBox.getValue()));
+                line.setStroke(Color.web(lineColourBox.getValue()));
 
                 // need to set Pane attributes and Connector attributes for proper saving
-                pane.labelColor = labelColorBox.getValue();
-                pane.color = lineColorBox.getValue();
+                pane.labelColour = labelColourBox.getValue();
+                pane.colour = lineColourBox.getValue();
 
                 pane.syncAttr();
             }
         });
 
-        grid.add(labelColorLabel, 0, 0);
-        grid.add(labelColorBox, 1, 0);
-        grid.add(lineColorLabel, 0, 1);
-        grid.add(lineColorBox, 1, 1);
+        grid.add(labelColourLabel, 0, 0);
+        grid.add(labelColourBox, 1, 0);
+        grid.add(lineColourLabel, 0, 1);
+        grid.add(lineColourBox, 1, 1);
         grid.add(saveButton, 0, 2);
 
         Scene scene = new Scene (grid, 300, 100);
@@ -223,8 +223,8 @@ public class ConnectorPane extends Pane {
 
     public void syncAttr() {
         connector.setLabel(label.getText());
-        connector.setLabelColor(labelColor);
-        connector.setColor(color);
+        connector.setLabelColour(labelColour);
+        connector.setColour(colour);
         connector.setType(type);
         connector.setisRendered(isRendered);
         connector.setNode1(node1);

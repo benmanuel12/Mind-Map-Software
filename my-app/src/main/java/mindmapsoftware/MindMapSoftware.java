@@ -440,10 +440,10 @@ public class MindMapSoftware extends Application {
         quickAddToggleButton.setOnAction(e -> {
             
             if (enabled == false){
-                quickAddToggleButton.setStyle("-fx-background-color: #00ff00");
+                quickAddToggleButton.setStyle("-fx-background-colour: #00ff00");
                 enabled = true;
             } else {
-                quickAddToggleButton.setStyle("-fx-background-color: #ff0000");
+                quickAddToggleButton.setStyle("-fx-background-colour: #ff0000");
                 enabled = false;
             }
         });

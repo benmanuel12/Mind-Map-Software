@@ -34,10 +34,10 @@ public class NodePane extends Pane{
 
     // Node Attributes with a corresponding named attribute in CustomNode
     private String title; // links to name in CustomNode
-    private String nameColor;
-    private String backgroundColor;
+    private String nameColour;
+    private String backgroundColour;
     private String borderType; // links to border in CustomNode
-    private String borderColor;
+    private String borderColour;
     private boolean center;
     private String media;
     private String text;
@@ -57,20 +57,20 @@ public class NodePane extends Pane{
         this.title = title;
     }
 
-    public String getNameColor() {
-        return this.nameColor;
+    public String getNameColour() {
+        return this.nameColour;
     }
 
-    public void setNameColor(String nameColor) {
-        this.nameColor = nameColor;
+    public void setNameColour(String nameColour) {
+        this.nameColour = nameColour;
     }
 
-    public String getBackgroundColor() {
-        return this.backgroundColor;
+    public String getBackgroundColour() {
+        return this.backgroundColour;
     }
 
-    public void setBackgroundColor(String backgroundColor) {
-        this.backgroundColor = backgroundColor;
+    public void setBackgroundColour(String backgroundColour) {
+        this.backgroundColour = backgroundColour;
     }
 
     public String getBorderType() {
@@ -81,12 +81,12 @@ public class NodePane extends Pane{
         this.borderType = borderType;
     }
 
-    public String getBorderColor() {
-        return this.borderColor;
+    public String getBorderColour() {
+        return this.borderColour;
     }
 
-    public void setBorderColor(String borderColor) {
-        this.borderColor = borderColor;
+    public void setBorderColour(String borderColour) {
+        this.borderColour = borderColour;
     }
 
     public boolean isCenter() {
@@ -158,10 +158,10 @@ public class NodePane extends Pane{
         this.node = node;
 
         this.title = node.getName();
-        this.nameColor = node.getNameColor();
-        this.backgroundColor = node.getBackgroundColor();
+        this.nameColour = node.getNameColour();
+        this.backgroundColour = node.getBackgroundColour();
         this.borderType = node.getBorder();
-        this.borderColor = node.getBorderColor();
+        this.borderColour = node.getBorderColour();
         this.center = node.isCenter();
         this.media = "file:testImage.jpg";
         this.text = node.getText();
@@ -173,8 +173,8 @@ public class NodePane extends Pane{
 
         // change below to use refernces to node attribute
 
-        this.rect.setFill(Color.web(this.backgroundColor));
-        this.rect.setStroke(Color.web(this.borderColor));
+        this.rect.setFill(Color.web(this.backgroundColour));
+        this.rect.setStroke(Color.web(this.borderColour));
         this.rect.setStrokeWidth(5);
 
         this.titleLabel = new EditableLabel(this.title);
@@ -242,30 +242,30 @@ public class NodePane extends Pane{
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(10));
 
-        // Name Color
-        Label nameColorLabel = new Label("Name Color");
-        ObservableList<String> nameColorOptions = FXCollections.observableArrayList(
+        // Name Colour
+        Label nameColourLabel = new Label("Name Colour");
+        ObservableList<String> nameColourOptions = FXCollections.observableArrayList(
             "black",
             "red",
             "green",
             "yellow",
             "blue"
         );
-        ComboBox<String> nameColorBox = new ComboBox<>(nameColorOptions);
-        nameColorBox.setValue("black");
+        ComboBox<String> nameColourBox = new ComboBox<>(nameColourOptions);
+        nameColourBox.setValue("black");
 
     
-        // Background Color
-        Label backgroundColorLabel = new Label("Background Color");
-        ObservableList<String> backgroundColorOptions = FXCollections.observableArrayList(
+        // Background Colour
+        Label backgroundColourLabel = new Label("Background Colour");
+        ObservableList<String> backgroundColourOptions = FXCollections.observableArrayList(
             "black",
             "red",
             "green",
             "yellow",
             "blue"
         );
-        ComboBox<String> BackgroundColorBox = new ComboBox<>(backgroundColorOptions);
-        BackgroundColorBox.setValue("blue");
+        ComboBox<String> BackgroundColourBox = new ComboBox<>(backgroundColourOptions);
+        BackgroundColourBox.setValue("blue");
     
         // Border
         Label borderLabel = new Label("Border Style");
@@ -277,17 +277,17 @@ public class NodePane extends Pane{
         ComboBox<String> BorderStyleBox = new ComboBox<>(borderOptions);
         BorderStyleBox.setValue("rectangle");
     
-        // BorderColor
-        Label borderColorLabel = new Label("Border Color");
-        ObservableList<String> borderColorOptions = FXCollections.observableArrayList(
+        // BorderColour
+        Label borderColourLabel = new Label("Border Colour");
+        ObservableList<String> borderColourOptions = FXCollections.observableArrayList(
             "black",
             "red",
             "green",
             "yellow",
             "blue"
         );
-        ComboBox<String> BorderColorBox = new ComboBox<>(borderColorOptions);
-        BorderColorBox.setValue("black");
+        ComboBox<String> BorderColourBox = new ComboBox<>(borderColourOptions);
+        BorderColourBox.setValue("black");
 
         // Media
         Label imageLabel = new Label("Image");
@@ -302,21 +302,21 @@ public class NodePane extends Pane{
         saveButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
-                EditableLabel nameColorOut = (EditableLabel) pane.getChildren().get(1);
-                nameColorOut.setTextFill(Color.web(nameColorBox.getValue()));
-                Rectangle backgroundColorOut = (Rectangle) pane.getChildren().get(0);
-                backgroundColorOut.setFill(Color.web(BackgroundColorBox.getValue()));
+                EditableLabel nameColourOut = (EditableLabel) pane.getChildren().get(1);
+                nameColourOut.setTextFill(Color.web(nameColourBox.getValue()));
+                Rectangle backgroundColourOut = (Rectangle) pane.getChildren().get(0);
+                backgroundColourOut.setFill(Color.web(BackgroundColourBox.getValue()));
                 // Border Style goes here
-                backgroundColorOut.setStroke(Color.web(BorderColorBox.getValue()));
+                backgroundColourOut.setStroke(Color.web(BorderColourBox.getValue()));
                 // Handle isCenter
                 if (isCenter.isSelected()){
                     pane.setCenter(true);
                     pane.getNode().setCenter(true);
                 };
                 // also need to change the Pane attributes and the CustomNode values too for perfect saving
-                pane.nameColor = nameColorBox.getValue();
-                pane.backgroundColor = BackgroundColorBox.getValue();
-                pane.borderColor = BorderColorBox.getValue();
+                pane.nameColour = nameColourBox.getValue();
+                pane.backgroundColour = BackgroundColourBox.getValue();
+                pane.borderColour = BorderColourBox.getValue();
 
                 pane.syncAttr();
             }
@@ -342,14 +342,14 @@ public class NodePane extends Pane{
             }
         });
 
-        grid.add(nameColorLabel, 0, 0);
-        grid.add(nameColorBox, 1, 0);
-        grid.add(backgroundColorLabel, 0, 1);
-        grid.add(BackgroundColorBox, 1, 1);
+        grid.add(nameColourLabel, 0, 0);
+        grid.add(nameColourBox, 1, 0);
+        grid.add(backgroundColourLabel, 0, 1);
+        grid.add(BackgroundColourBox, 1, 1);
         grid.add(borderLabel, 0, 2);
         grid.add(BorderStyleBox, 1, 2);
-        grid.add(borderColorLabel, 0, 3);
-        grid.add(BorderColorBox, 1, 3);
+        grid.add(borderColourLabel, 0, 3);
+        grid.add(BorderColourBox, 1, 3);
         grid.add(imageLabel, 0, 4);
         grid.add(imageButton, 1, 4);
         grid.add(isCenter, 0, 5);
@@ -364,10 +364,10 @@ public class NodePane extends Pane{
 
     public void syncAttr(){
         node.setName(this.title);
-        node.setNameColor(this.nameColor);
-        node.setBackgroundColor(this.backgroundColor);
+        node.setNameColour(this.nameColour);
+        node.setBackgroundColour(this.backgroundColour);
         node.setBorder(this.borderType);
-        node.setBorderColor(this.borderColor);
+        node.setBorderColour(this.borderColour);
         node.setCenter(this.center);
         node.setMedia(this.media);
         node.setText(this.text);

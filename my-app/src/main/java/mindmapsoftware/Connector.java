@@ -6,10 +6,10 @@ public class Connector extends Element {
 
     private String label;
 
-    public Connector(String label, String labelColor, String color, String type, boolean isRendered) {
+    public Connector(String label, String labelColour, String colour, String type, boolean isRendered) {
         this.label = label;
-        this.labelColor = labelColor;
-        this.color = color;
+        this.labelColour = labelColour;
+        this.colour = colour;
         this.type = type;
         this.isRendered = isRendered;
         // add custom nodes
@@ -17,15 +17,15 @@ public class Connector extends Element {
 
     public Connector() {
         this.label = "Add label";
-        this.labelColor = "black";
-        this.color = "black";
+        this.labelColour = "black";
+        this.colour = "black";
         this.type = "line";
         this.isRendered = false;
         // add custom nodes
     }
 
-    private String labelColor;
-    private String color;
+    private String labelColour;
+    private String colour;
     private String type;
     private boolean isRendered;
     private CustomNode node1;
@@ -39,20 +39,20 @@ public class Connector extends Element {
         this.label = label;
     }
 
-    public String getLabelColor() {
-        return labelColor;
+    public String getLabelColour() {
+        return labelColour;
     }
 
-    public void setLabelColor(String labelColor) {
-        this.labelColor = labelColor;
+    public void setLabelColour(String labelColour) {
+        this.labelColour = labelColour;
     }
 
-    public String getColor() {
-        return color;
+    public String getColour() {
+        return colour;
     }
 
-    public void setColor(String color) {
-        this.color = color;
+    public void setColour(String colour) {
+        this.colour = colour;
     }
 
     public String getType() {
@@ -92,8 +92,8 @@ public class Connector extends Element {
         ArrayList<Object> returnList = new ArrayList<>();
         returnList.add("Connector");
         returnList.add(label);
-        returnList.add(labelColor);
-        returnList.add(color);
+        returnList.add(labelColour);
+        returnList.add(colour);
         returnList.add(type);
         returnList.add(isRendered);
         returnList.add(node1);
